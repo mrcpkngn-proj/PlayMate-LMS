@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Delete Classroom{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-form-container">
+
+    <div class="classroom-form-card">
+
+        <h1>Delete Classroom</h1>
+
+        <p>
+
+            Are you sure you want to delete
+
+            <strong>{{ classroom.name }}</strong>?
+
+        </p>
+
+        <p>This action cannot be undone.</p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button class="classroom-dashboard-btn delete">
+
+                Confirm Delete
+
+            </button>
+
+            <a
+                href="{% url 'classroom:classroom_stream' classroom.pk %}"
+                class="classroom-dashboard-btn">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

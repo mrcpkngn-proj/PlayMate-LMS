@@ -1,0 +1,222 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block title %}
+Student Dashboard
+{% endblock %}
+
+{% block classroom_content %}
+
+<div class="classroom-stream">
+
+    <h2>Student Dashboard</h2>
+
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+            <h3>{{ quiz_average|floatformat:1 }}%</h3>
+            <p>Quiz Average</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>{{ completed_quizzes }}</h3>
+            <p>Completed Quizzes</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>{{ completed_assignments }}</h3>
+            <p>Assignments Submitted</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>{{ pending_assignments.count }}</h3>
+            <p>Pending Assignments</p>
+        </div>
+
+    </div>
+
+    <hr style="margin: 0; margin-top: 20px; background-color: #2d69bf;">
+
+    <div class="dashboard-grid">
+
+        <div class="quiz-section dashboard">
+
+            <h3>Latest Announcement</h3>
+
+            {% if latest_announcement %}
+
+            <div class="announcement-box">
+
+                <div class="announcement-header">
+
+                    <strong>
+                        {{ latest_announcement.author.get_full_name|default:latest_announcement.author.username }}
+                    </strong>
+
+                    <span>
+                        {{ latest_announcement.created_at|date:"M d, Y • h:i A" }}
+                    </span>
+
+                </div>
+                <hr>
+                <div class="announcement-body">{{ latest_announcement.message|linebreaksbr }}</div>
+
+            </div>
+
+            {% else %}
+
+            <p>No announcements.</p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="quiz-section dashboard">
+
+            <h3>Pending Assignments</h3>
+
+            <table class="classroom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Assignment</th>
+                        <th>Due</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for assignment in pending_assignments %}
+
+                    <tr>
+
+                        <td>{{ assignment.classwork.title }}</td>
+
+                        <td>
+
+                            {% if assignment.classwork.due_date %}
+
+                                {{ assignment.classwork.due_date|date:"M d" }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="2">
+
+                            🎉 You're all caught up!
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="quiz-section dashboard">
+
+            <h3>Recent Quiz Attempts</h3>
+
+            <table class="classroom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Quiz</th>
+                        <th>Score</th>
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for row in recent_attempt_rows %}
+
+                    <tr>
+
+                        <td>{{ row.attempt.quiz.classwork.title }}</td>
+
+                        <td>{{ row.percentage|floatformat:1 }}%</td>
+
+                        <td>{{ row.attempt.submitted_at|date:"M d" }}</td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="3">
+
+                            No quiz attempts yet.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="quiz-section dashboard">
+
+            <h3>Performance Summary</h3>
+
+            <div class="performance-summary">
+
+                {% if quiz_average >= 90 %}
+
+                    <p>🌟 Excellent work! Keep it up.</p>
+
+                {% elif quiz_average >= 75 %}
+
+                    <p>👍 You're doing well. Stay consistent.</p>
+
+                {% else %}
+
+                    <p>📚 Spend more time reviewing recent lessons.</p>
+
+                {% endif %}
+
+                <hr>
+
+                <p><strong>Quiz Average:</strong> {{ quiz_average|floatformat:1 }}%</p>
+
+                <p><strong>Completed Quizzes:</strong> {{ completed_quizzes }}</p>
+
+                <p><strong>Submitted Assignments:</strong> {{ completed_assignments }}</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

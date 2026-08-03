@@ -1,0 +1,93 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block classroom_content %}
+
+<div class="classroom-stream">
+    <div class="classroom-content-header">
+
+        <h2>Members</h2>
+
+    </div>
+    <div class="people-section">
+
+        <h3>Owner/s</h3>
+
+        <div class="person-card">
+
+            <div class="person-avatar">
+                {{ teacher.username|first|upper }}
+            </div>
+
+            <div class="person-info">
+
+                <strong>{{ teacher.get_full_name|default:teacher.username }}</strong>
+
+                <p>{{ teacher.email }}</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="people-section">
+
+        <h3>
+
+            Students
+
+            ({{ students.count }})
+
+        </h3>
+
+        {% for member in students %}
+
+        <div class="person-card">
+
+            <div class="person-avatar">
+
+                {{ member.student.username|first|upper }}
+
+            </div>
+
+            <div class="person-info">
+
+                <strong>
+
+                    {{ member.student.get_full_name|default:member.student.username }}
+
+                </strong>
+
+                <p>
+
+                    {{ member.student.email }}
+
+                </p>
+
+            </div>
+
+            {% if request.user == classroom.teacher %}
+
+            <a
+                href="{% url 'classroom:remove_student' classroom.pk member.student.pk %}"
+                class="classroom-dashboard-btn delete">
+
+                Remove
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% empty %}
+
+        <p>No students have joined yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

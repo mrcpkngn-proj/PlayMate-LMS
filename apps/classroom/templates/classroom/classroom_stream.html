@@ -1,0 +1,164 @@
+{% extends "classroom/classroom_base.html" %}
+{% load static %}
+
+{% block classroom_content %}
+
+<div class="classroom-stream">
+    <h2>Stream</h2>
+    {% if request.user == classroom.teacher %}
+    <div class="quiz-section dashboard stream">
+
+        <form method="post">
+            {% csrf_token %}
+
+            {{ announcement_form.message }}
+
+            <br>
+
+            <button
+                type="submit"
+                class="classroom-dashboard-btn">
+
+                Post Announcement
+
+            </button>
+
+        </form>
+    </div>
+    {% endif %}
+
+    {% if stream_posts %}
+
+        {% for post in stream_posts %}
+
+            {% if post.post_type == "announcement" %}
+
+            <div class="quiz-section stream-announcement" style="border: 2px solid #2d69bf;">
+
+                <div class="stream-announcement-header">
+
+                    <div class="stream-announcement-info">
+
+                        <span class="stream-icon">📢</span>
+
+                        <div>
+
+                            <strong>{{ post.get_post_type_display }}</strong>
+
+                            <small>
+
+                                {{ post.author.get_full_name|default:post.author.username }}
+                                •
+                                {{ post.created_at|date:"M d, Y • h:i A" }}
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    {% if request.user == classroom.teacher %}
+
+                    <div class="stream-actions">
+
+                        <a href="{% url 'classroom:edit_announcement' classroom.id post.id %}">
+                            ✏️ Edit
+                        </a>
+
+                        <a href="{% url 'classroom:delete_announcement' classroom.id post.id %}">
+                            🗑️ Delete
+                        </a>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="stream-message-box">{{ post.message|linebreaksbr }}</div>
+
+            </div>
+
+            {% else %}
+
+            <div class="quiz-section stream-classwork dashboard">
+
+                <div class="stream-left">
+
+                    {% if post.post_type == "assignment" %}
+                        <span class="stream-icon">📁</span>
+                    {% else %}
+                        <span class="stream-icon">📝</span>
+                    {% endif %}
+
+                    <div>
+
+                        <strong>
+
+                            {{ post.get_post_type_display }}
+
+                        </strong>
+
+                        <small>
+
+                            {{ post.author.get_full_name|default:post.author.username }}
+                            •
+                            {{ post.created_at|date:"M d, Y • h:i A" }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="stream-right">
+
+                    {% if post.post_type == "assignment" %}
+
+                    <a
+                        href="{% url 'assignment:assignment_detail' post.assignment.id %}"
+                        class="stream-link">
+
+                        {{ post.assignment.classwork.title }}
+
+                    </a>
+
+                    {% else %}
+
+                    <a
+                        href="{% url 'classroom:classroom_classwork' classroom.id %}"
+                        class="stream-link">
+
+                        {{ post.quiz.classwork.title }}
+
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        {% endfor %}
+
+    {% else %}
+
+    <div class="quiz-section">
+
+        <h3>No posts yet.</h3>
+
+        <p>
+
+            Announcements, assignments, and quizzes will appear here.
+
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

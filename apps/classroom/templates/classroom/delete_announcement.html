@@ -1,0 +1,35 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block classroom_content %}
+
+<div class="classroom-stream dashboard stream">
+
+    <h2 style="color: #facc15;">Delete Announcement</h2>
+
+    <h3 style="font-family: 'VT323', monospace;">Are you sure you want to delete this announcement?</h3>
+
+    <h4 style="border:2px dashed #194181; padding:18px 22px;">{{ announcement.message }}</h4>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <button type="submit"
+                class="classroom-dashboard-btn secondary">
+
+            Delete
+
+        </button>
+
+        <a href="{% url 'classroom:classroom_stream' classroom.id %}"
+           class="classroom-dashboard-btn">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

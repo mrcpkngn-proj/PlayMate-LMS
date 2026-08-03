@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+    <link rel="stylesheet" href="{% static 'css/assignment.css' %}">
+    <link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block title %}
+    {% if assignment %}
+        Edit Assignment
+    {% else %}
+        Create Assignment
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="quiz-page">
+
+    <div class="quiz-dashboard-header">
+        <h1 class="quiz-dashboard-title">
+            {% if assignment %}
+                Edit Assignment
+            {% else %}
+                Create Assignment
+            {% endif %}
+        </h1>
+    </div>
+
+    <form method="post" id="quiz-form" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- =========================
+             CLASSWORK DETAILS
+        ========================== -->
+
+        <fieldset class="quiz-section">
+            <legend>Classwork Details</legend>
+
+            <div class="django-form-row-styling">
+                {{ classwork_form.as_p }}
+            </div>
+        </fieldset>
+
+        <fieldset class="quiz-section">
+
+            <legend>Attachments</legend>
+
+            <div id="drop-zone">
+
+                <div class="drop-zone-content">
+
+                    <div class="drop-icon">
+
+                        📁
+
+                    </div>
+
+                    <h3>
+
+                        Drag & Drop Files Here
+
+                    </h3>
+
+                    <p>
+
+                        or
+
+                    </p>
+
+                    <button
+                        type="button"
+                        id="add-attachment"
+                        class="quiz-dashboard-btn">
+
+                        + Add File
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div id="attachment-container"></div>
+
+            {% if assignment and assignment.attachments.exists %}
+
+            <div class="existing-attachments">
+
+                <h3 class="attachment-heading">
+
+                    Current Attachments
+
+                </h3>
+
+                {% for attachment in assignment.attachments.all %}
+
+                <div class="existing-attachment-card">
+
+                    <div class="attachment-info">
+
+                        <div class="attachment-icon">
+
+                            📄
+
+                        </div>
+
+                        <div>
+
+                            <div class="attachment-name">
+
+                                {{ attachment.file.name }}
+
+                            </div>
+
+                            <div class="attachment-meta">
+
+                                Uploaded file
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="attachment-actions">
+
+                        <a
+                            href="{{ attachment.file.url }}"
+                            target="_blank"
+                            class="classroom-dashboard-btn">
+
+                            Download
+
+                        </a>
+
+                        <button
+                            type="button"
+                            class="classroom-dashboard-btn delete open-delete-modal"
+                            data-url="{% url 'assignment:attachment_delete' attachment.id %}"
+                            data-name="{{ attachment.file.name }}">
+
+                            Delete
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+        </fieldset>
+
+        <template id="attachment-template">
+
+            <div class="attachment-input-row">
+
+                <label class="attachment-upload-btn">
+
+                    Choose File
+
+                    <input
+                        type="file"
+                        name="attachments"
+                        class="attachment-input"
+                        hidden>
+
+                </label>
+
+                <span class="attachment-filename">
+
+                    No file selected
+
+                </span>
+
+                <button
+                    type="button"
+                    class="classroom-dashboard-btn delete remove-attachment">
+
+                    Remove
+
+                </button>
+
+            </div>
+
+        </template>
+
+        <!-- =========================
+             ASSIGNMENT DETAILS
+        ========================== -->
+
+        <fieldset class="quiz-section">
+            <legend>Assignment Settings</legend>
+
+            <div class="django-form-row-styling">
+                {{ assignment_form.as_p }}
+            </div>
+        </fieldset>
+
+        <div class="quiz-actions">
+
+            <button
+                type="submit"
+                class="quiz-dashboard-btn">
+
+                {% if assignment %}
+                    Save Changes
+                {% else %}
+                    Create Assignment
+                {% endif %}
+
+            </button>
+            
+            <div class="quiz-dashboard-btn">
+              <a
+                  href="{% url 'classroom:classroom_classwork' classroom.id %}">
+                  Cancel
+              </a>
+
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<div id="deleteAttachmentModal" class="modal hidden">
+
+    <div class="modal-content">
+
+        <h3>Delete Attachment?</h3>
+
+        <p id="attachmentDeleteText"></p>
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                id="cancelDelete"
+                class="classroom-dashboard-btn">
+
+                Cancel
+
+            </button>
+
+            <a
+                id="confirmDelete"
+                class="delete-file-btn">
+
+                Delete
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/assignment_form.js' %}"></script>
+{% endblock %}

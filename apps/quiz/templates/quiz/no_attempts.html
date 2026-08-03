@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+
+<div class='classroom-header'>
+  <h1>{{ quiz.classwork.title }}</h1>
+</div>
+
+<div class='question-card'>
+
+  <div class="no-attempts">
+    <p>You have already used all {{ max_attempts }} attempt{{ max_attempts|pluralize }} for this quiz.</p>
+    <p>Total attempts used: {{ attempts_used }}</p>
+  </div>
+</div>
+
+<a href="{% url 'classroom:classroom_classwork' quiz.classwork.classroom.id %}" class="quiz-dashboard-btn">Return to Quiz List</a>
+
+{% endblock %}

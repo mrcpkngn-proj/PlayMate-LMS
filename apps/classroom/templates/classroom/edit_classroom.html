@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Classroom{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-form-container">
+
+    <div class="classroom-form-card">
+
+        <h1>Edit Classroom</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <br>
+
+            <button class="classroom-dashboard-btn">
+
+                Save Changes
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

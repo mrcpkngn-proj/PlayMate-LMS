@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Grade Submission{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/assignment.css' %}">
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="assignment-page">
+
+    <div class="classroom-header">
+        <div>
+            <h1>Grade Submission</h1>
+            <p>
+                Submitted by: {{ submission.student.get_full_name|default:submission.student.username }} | {{ submission.student.email }}
+            </p>
+        </div>
+
+        <a href="{% url 'assignment:submission_list' assignment.id %}"
+           class="classroom-dashboard-btn">
+            ← Back
+        </a>
+    </div>
+
+    <div class="assignment-section">
+
+        <h2>Student Submission</h2>
+
+        <p>
+
+            Submitted:
+            {{ submission.submitted_at }}
+
+        </p>
+
+        <a href="{{ submission.submission_file.url }}"
+           class="classroom-dashboard-btn"
+           download>
+
+            Download Submission
+
+        </a>
+
+    </div>
+
+    <div class="assignment-section">
+
+        <h2>Grade</h2>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="django-form-row-styling">
+
+                <label>
+
+                    Grade
+
+                    <strong>/ {{ assignment.points }}</strong>
+
+                </label>
+
+                {{ form.grade }}
+
+            </div>
+
+            <div class="django-form-row-styling">
+
+                <label>
+
+                    Feedback
+
+                </label>
+
+                {{ form.feedback }}
+
+            </div>
+
+            <button
+                type="submit"
+                class="classroom-dashboard-btn">
+
+                Save Grade
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+<div class="classroom-tabs">
+
+    {% if request.user == classroom.teacher %}
+
+    <a href="{% url 'classroom:classroom_dashboard' classroom.id %}">
+        Dashboard
+    </a>
+
+    {% else %}
+
+    <a href="{% url 'classroom:student_dashboard' classroom.id %}">
+        Dashboard
+    </a>
+
+    {% endif %}
+
+    <a href="{% url 'classroom:classroom_stream' classroom.pk %}"
+       class="{% if request.resolver_match.url_name == 'classroom_stream' %}active{% endif %}">
+        Stream
+    </a>
+
+    <a href="{% url 'classroom:classroom_classwork' classroom.pk %}"
+       class="{% if request.resolver_match.url_name == 'classroom_classwork' %}active{% endif %}">
+        Classwork
+    </a>
+
+    <a href="{% url 'classroom:classroom_people' classroom.pk %}"
+       class="{% if request.resolver_match.url_name == 'classroom_people' %}active{% endif %}">
+        Members
+    </a>
+
+    <a href="{% url 'classroom:classroom_grades' classroom.pk %}"
+       class="{% if request.resolver_match.url_name == 'classroom_grades' %}active{% endif %}">
+        Grades
+    </a>
+        <a href="{% url 'classroom:classroom_analytics' classroom.id %}">
+        Analytics
+    </a>
+
+</div>

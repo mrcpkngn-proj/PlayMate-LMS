@@ -1,0 +1,149 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>PlayMate LMS | Login</title>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
+</head>
+
+<body>
+<div class="cursor-glow"></div>
+<div class="login-page">
+
+    <!-- ========================================= -->
+    <!-- NAVBAR -->
+    <!-- ========================================= -->
+
+    <nav class="login-navbar">
+
+        <div class="nav-left">
+            <img src="{% static 'images/navlogo.png' %}" alt="PlayMate" class="nav-logo">
+            <div class="nav-buttons">
+                <a href="{% url 'accounts:login' %}"class="nav-btn active">Login</a>
+                <a href="{% url 'accounts:register' %}" class="nav-btn">Register</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <a href="#">About</a>
+            <img src="{% static 'images/settings.png' %}" class="settings-icon" alt="Settings">
+        </div>
+
+    </nav>
+
+    <!-- CONTENT -->
+
+    <div class="login-content">
+
+        <!-- LEFT SIDE -->
+        <div class="login-left">
+            <div class="login-card">
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+
+                    {% endif %}
+
+                    <label for="id_username"> Email</label>
+                    {{ form.username }}
+
+                    {% if form.username.errors %}
+
+                        <small class="field-error">
+
+                            {{ form.username.errors }}
+
+                        </small>
+
+                    {% endif %}
+
+                    <label for="id_password">Password</label>
+                    {{ form.password }}
+
+                    {% if form.password.errors %}
+
+                        <small class="field-error">
+
+                            {{ form.password.errors }}
+
+                        </small>
+
+                    {% endif %}
+
+                    <div class="login-buttons">
+
+                        <button type="submit" class="btn-blue">Login</button>
+
+                        <a href="{% url 'accounts:register' %}" class="btn-orange register-btn">Register</a>
+
+                    </div>
+
+                    <div class="login-link">
+                        <a href="#">Forgot Password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div class="login-right">
+
+            <div class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="PlayMate LMS" class="img-logo">
+
+                <img src="{% static 'images/logo-text.png' %}" class="logo-text">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const glow = document.querySelector('.cursor-glow');
+
+    document.addEventListener('mousemove', e => {
+        glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
+
+    document.addEventListener('mouseover', e => {
+        const tag = e.target.tagName.toLowerCase();
+        const isInteractive =
+            tag === 'input' ||
+            tag === 'textarea' ||
+            tag === 'a' ||
+            tag === 'button' ||
+            window.getComputedStyle(e.target).cursor === 'pointer' ||
+            window.getComputedStyle(e.target).cursor === 'text';
+
+        if (isInteractive) {
+            glow.classList.add('hidden'); // Hide glow
+            document.body.style.cursor = ''; // Restore default cursor
+        } else {
+            glow.classList.remove('hidden'); // Show glow
+            document.body.style.cursor = 'none'; // Hide default cursor
+        }
+    });
+</script>
+</body>
+
+</html>

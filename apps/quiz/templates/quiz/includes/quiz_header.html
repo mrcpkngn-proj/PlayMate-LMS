@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="quiz-header-fixed">
+
+    {% if quiz.use_question_timer %}
+        <div id="question-timer"
+             class="question-timer"
+             data-started-at="{{ question_started_at|date:'c' }}"
+             data-duration="{{ question_duration }}">
+            Question Time Left: --
+        </div>
+    {% endif %}
+
+    <div id="quiz-timer"
+         class="quiz-timer-box"
+         data-started-at="{{ quiz_started_at|date:'c' }}"
+         data-duration="{{ quiz_duration }}">
+        Quiz Time Left: --
+    </div>
+
+    <div class="quiz-progress-wrapper">
+
+        <div class="progress-text">
+            Progress
+            {{ progress }}%
+        </div>
+
+        <div class="quiz-progress">
+
+            <div class="quiz-progress-bar"
+                 style="width:{{ progress }}%">
+            </div>
+
+            <img
+                src="{% static 'images/rocket.png' %}"
+                class="rocket-icon"
+                style="left:calc({{ progress }}% - 20px);">
+
+            <img
+                src="{% static 'images/planet.png' %}"
+                class="planet-icon">
+
+        </div>
+
+    </div>
+
+</div>

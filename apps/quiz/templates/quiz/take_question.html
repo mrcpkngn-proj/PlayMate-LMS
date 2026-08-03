@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ quiz.title }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ========================= -->
+<!-- Fixed Quiz HUD -->
+<!-- ========================= -->
+
+<div class="quiz-hud">
+
+    <div class="hud-top">
+
+        <div>
+            <h2 class="quiz-title">{{ quiz.classwork.title }}</h2>
+
+            <p class="hud-question-counter">Question {{ question_index|add:1 }} of {{ total_questions }}</p>
+        </div>
+
+        <div class="hud-timers">
+            <div
+                id="quiz-timer"
+                data-started-at="{{ quiz_started_at|date:'c' }}"
+                data-duration="{{ quiz_duration }}">
+                Quiz Time Left: --
+            </div>
+        </div>
+
+    </div> <!-- END hud-top -->
+
+    <!-- Progress bar goes BELOW hud-top -->
+    <div class="quiz-progress">
+
+        <div
+            id="quiz-progress-bar"
+            class="quiz-progress-bar">
+        </div>
+
+        <img
+            src="{% static 'images/planet.png' %}"
+            class="planet-icon">
+
+        <img
+            id="rocket-icon"
+            src="{% static 'images/rocket.png' %}"
+            class="rocket-icon">
+
+    </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- Question -->
+<!-- ========================= -->
+
+<div class="quiz-container">
+  <div class="question-card">
+    <form id="question-form" method="post" action="{% url 'quiz:submit_question' attempt.id question.id question_index %}">
+    {% csrf_token %}
+      <div class="question-header">
+
+          <div class="question-header-left">
+
+              <h2 class="quiz-question-text">
+                  {{ question.text }}
+              </h2>
+
+              <p class="quiz-points">
+                  Points:
+                  <strong>{{ question.points }}</strong>
+              </p>
+
+              {% if question.answer_type == "single" %}
+              <p class="quiz-instruction">
+                  <em>Select one answer.</em>
+              </p>
+              {% else %}
+              <p class="quiz-instruction">
+                  <em>Select up to {{ correct_count }} answers.</em>
+              </p>
+              {% endif %}
+
+          </div>
+
+          {% if quiz.use_question_timer %}
+          <div id="question-timer-box" class="question-timer-box">
+
+              <span class="question-timer-label">
+                  Question Time Left
+              </span>
+
+              <strong
+                  id="question-timer"
+                  data-started-at="{{ question_started_at|date:'c' }}"
+                  data-duration="{{ question_duration }}">
+              </strong>
+
+          </div>
+          {% endif %}
+
+      </div>
+
+      <div class="quiz-options">
+
+          {% for choice in choices %}
+
+          <label>
+              <input
+                  type="{% if question.answer_type == 'single' %}radio{% else %}checkbox{% endif %}"
+                  name="choice"
+                  value="{{ choice.id }}">
+              {{ choice.text }}
+          </label>
+          {% endfor %}
+      </div>
+
+    <button id="next-button" type="submit" class="quiz-btn-gradient">Next</button>
+
+    </form>
+
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/quiz_progress.js' %}"></script>
+<script src="{% static 'js/quiz_timers.js' %}"></script>
+<script>
+    
+const progress = {{ progress }};
+
+const totalQuestions = {{ total_questions }};
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const checkboxes = document.querySelectorAll(
+        'input[type="checkbox"][name="choice"]'
+    );
+
+    if (!checkboxes.length) return;
+
+    const maxSelections = Number("{{ correct_count }}");
+
+    checkboxes.forEach((cb, index) => {
+
+        cb.addEventListener("change", function () {
+
+
+            const checked = document.querySelectorAll(
+                'input[type="checkbox"][name="choice"]:checked'
+            );
+
+
+            if (checked.length > maxSelections) {
+
+                this.checked = false;
+
+                alert(
+                    `You can only select up to ${maxSelections} answers.`
+                );
+            }
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

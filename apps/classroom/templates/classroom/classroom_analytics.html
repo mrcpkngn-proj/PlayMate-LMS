@@ -1,0 +1,113 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block title %}
+Analytics
+{% endblock %}
+
+{% block classroom_content %}
+
+<div class="classroom-stream">
+
+    <h2>Learning Analytics</h2>
+
+    {% if is_teacher %}
+
+        <div class="quiz-section">
+
+            <h3>Quiz Performance</h3>
+
+            <table class="classroom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Quiz</th>
+
+                        <th>Average</th>
+
+                        <th>Attempts</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for row in quiz_rows %}
+
+                    <tr>
+
+                        <td>{{ row.quiz.classwork.title }}</td>
+
+                        <td>{{ row.average|floatformat:1 }}%</td>
+
+                        <td>{{ row.attempts }}</td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="quiz-section dashboard">
+
+            <h3>Your Quiz Performance</h3>
+
+            <table class="classroom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Quiz</th>
+
+                        <th>Score</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for row in percentages %}
+
+                    <tr>
+
+                        <td>{{ row.quiz.classwork.title }}</td>
+
+                        <td>{{ row.percentage|floatformat:1 }}%</td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="2">
+
+                            No completed quizzes.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block classroom_content %}
+
+<div class="classroom-stream">
+
+    <div class="classwork-header">
+
+        <h2>Classwork</h2>
+
+        {% if request.user == classroom.teacher %}
+
+        <div class="classwork-actions">
+
+            <button id="create-button"
+                    class="classroom-dashboard-btn">
+
+                + Create ▼
+
+            </button>
+
+            <div id="create-menu" class="create-menu hidden">
+
+                <a href="{% url 'assignment:assignment_create' classroom.id %}">
+                    📁 Assignment
+                </a>
+
+                <a href="{% url 'quiz:quiz_create' classroom.id %}">
+                    📝 Quiz
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="classwork-list">
+
+        {% for item in classworks %}
+
+        <div class="classwork-card {{ item.work_type }}">
+
+            <div class="classwork-info">
+
+                {% if item.work_type == "assignment" %}
+
+                    <h2>📁{{ item.title }}</h2>
+
+                {% elif item.work_type == "quiz" %}
+
+                    <h2>📝{{ item.title }}</h2>
+
+                {% endif %}
+
+                <p>{{ item.description }}</p>
+
+                <p>Date Assigned: {{item.created_at}}</p>
+
+                {% if item.due_date %}
+                    <small>
+                        Due:
+                        {{ item.due_date }}
+                    </small>
+                {% endif %}
+
+            </div>
+
+            <div class="classwork-actions-right">
+
+                {% if item.work_type == "assignment" %}
+
+                    {% if request.user == classroom.teacher %}
+
+                        <a
+                            href="{% url 'assignment:assignment_detail' item.assignment.id %}"
+                            class="classroom-dashboard-btn">
+
+                            View
+
+                        </a>
+                        <a
+                            href="{% url 'assignment:assignment_update' item.assignment.id %}"
+                            class="classroom-dashboard-btn">
+
+                            Edit
+
+                        </a>
+                        <a
+                            href="{% url 'assignment:assignment_delete' item.assignment.id %}"
+                            class="classroom-dashboard-btn delete">
+
+                            Delete
+
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'assignment:assignment_detail' item.assignment.id %}"
+                            class="classroom-dashboard-btn">
+
+                            View
+
+                        </a>
+
+                    {% endif %}
+
+                {% elif item.work_type == "quiz" %}
+
+                    {% if request.user == classroom.teacher %}
+                        <a
+                            href="{% url 'quiz:take_quiz' item.quiz.id %}"
+                            class="classroom-dashboard-btn">
+                            View
+                        </a>
+                        <a
+                            href="{% url 'quiz:quiz_update' item.quiz.id %}"
+                            class="classroom-dashboard-btn">
+                            Edit
+                        </a>
+                        <a
+                            href="{% url 'quiz:quiz_delete' item.quiz.id %}"
+                            class="classroom-dashboard-btn delete">
+                            Delete
+                        </a>
+                    {% else %}
+                        <a
+                            href="{% url 'quiz:take_quiz' item.quiz.id %}"
+                            class="classroom-dashboard-btn">
+                            Open
+                        </a>
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-state">
+
+            <h2>No classwork yet.</h2>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+    const createButton = document.getElementById("create-button");
+    const createMenu = document.getElementById("create-menu");
+
+    console.log(createButton);
+    console.log(createMenu);
+    createButton.addEventListener("click", function (e) {
+        e.stopPropagation();
+        createMenu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", function () {
+        createMenu.classList.add("hidden");
+    });
+</script>
+{% endblock %}
+

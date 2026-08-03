@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ classroom.name }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-detail">
+
+    {% include "classroom/includes/classroom_hero.html" %}
+
+    {% include "classroom/includes/classroom_tabs.html" %}
+
+    {% block classroom_content %}
+    {% endblock %}
+
+</div>
+
+{% endblock %}

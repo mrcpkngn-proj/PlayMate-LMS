@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Delete Quiz{% endblock %}
+
+{% block content %}
+    <h1>Delete Quiz</h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ quiz.title }}</strong>?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete</button>
+        <a href="{% url 'quiz:quiz_list' %}">Cancel</a>
+    </form>
+{% endblock %}

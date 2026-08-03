@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ quiz.title }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ================================================= -->
+<!-- Fixed Quiz HUD -->
+<!-- ================================================= -->
+
+<div class="quiz-hud">
+    <div class="hud-top">
+        <div>
+            <h2 class="quiz-title">
+                {{ quiz.classwork.title }}
+            </h2>
+            <p class="hud-question-counter">
+                {{ questions|length }} Questions in Total
+            </p>
+        </div>
+        <div class="hud-timers">
+            <div id="quiz-timer"
+                 data-started-at="{{ quiz_started_at|date:'c' }}"
+                 data-duration="{{ quiz_duration }}">
+                Quiz Time Left: --
+            </div>
+        </div>
+    </div>
+    <div class="quiz-progress">
+        <div
+            id="quiz-progress-bar"
+            class="quiz-progress-bar"
+            style="width:0%">
+        </div>
+        <img
+            src="{% static 'images/planet.png' %}"
+            class="planet-icon">
+        <img
+            src="{% static 'images/rocket.png' %}"
+            class="rocket-icon"
+            id="rocket-icon"
+            style="left:calc(0% - 20px);">
+    </div>
+</div>
+
+<div class="quiz-container">
+    <form id="quiz-form" method="post" action="{% url 'quiz:submit_full_quiz' attempt.id %}">
+
+    {% csrf_token %}
+
+    {% for question in questions %}
+
+    <div class="question-card" data-max-selections="{{ question.correct_count }}">
+
+        <h2 class="quiz-question-text">
+            {{ forloop.counter }}.
+            {{ question.text }}
+        </h2>
+
+        <p class="quiz-points">
+
+            Points:
+            <strong>{{ question.points }}</strong>
+
+        </p>
+
+        {% if question.answer_type == "single" %}
+
+            <p class="quiz-instruction">
+                <em>Select one answer.</em>
+            </p>
+
+        {% else %}
+
+            <p class="quiz-instruction">
+                <em>
+                    Select up to
+                    {{ question.correct_count }}
+                    answers.
+                </em>
+            </p>
+
+        {% endif %}
+
+        <div class="quiz-options">
+
+            {% for choice in question.shuffled_choices %}
+
+            <label>
+
+                <input
+                    class="quiz-choice"
+                    data-question="{{ question.id }}"
+                    type="{% if question.answer_type == 'single' %}radio{% else %}checkbox{% endif %}"
+                    name="question_{{ question.id }}"
+                    value="{{ choice.id }}">
+
+                {{ choice.text }}
+
+            </label>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+    <button type="submit" class="quiz-btn-gradient">Submit Quiz</button>
+
+    </form>
+
+</div>
+{% block extra_js %}
+
+<script src="{% static 'js/quiz_timers.js' %}"></script>
+<script src="{% static 'js/quiz_progress.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const totalQuestions = {{ questions|length }};
+
+    //--------------------------------------------------
+    // Limit multiple-choice selections
+    //--------------------------------------------------
+
+    document.querySelectorAll(".question-card").forEach(card => {
+
+        const maxSelections = parseInt(
+            card.dataset.maxSelections
+        );
+
+        if (!maxSelections)
+            return;
+
+        const checkboxes = card.querySelectorAll(
+            'input[type="checkbox"]'
+        );
+
+        checkboxes.forEach(cb => {
+
+            cb.addEventListener("change", function () {
+
+                const checked = card.querySelectorAll(
+                    'input[type="checkbox"]:checked'
+                );
+
+                if (checked.length > maxSelections) {
+
+                    this.checked = false;
+
+                    alert(
+                        `You can only select up to ${maxSelections} answers.`
+                    );
+
+                }
+
+            });
+
+        });
+
+    });
+
+    //--------------------------------------------------
+    // Warn before submitting unanswered quiz
+    //--------------------------------------------------
+
+    const quizForm = document.getElementById("quiz-form");
+
+    if (!quizForm)
+        return;
+
+    quizForm.addEventListener("submit", function (e) {
+
+        let unanswered = 0;
+
+        document.querySelectorAll(".question-card").forEach(card => {
+
+            const answered = card.querySelector(
+                "input:checked"
+            );
+
+            if (!answered)
+                unanswered++;
+
+        });
+
+        if (unanswered > 0) {
+
+            const proceed = confirm(
+
+                `You still have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}.\n\nDo you want to submit anyway?`
+
+            );
+
+            if (!proceed) {
+
+                e.preventDefault();
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
+
+{% endblock %}
+

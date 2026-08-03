@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Create Classroom
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-form-container">
+    <div class="classroom-form-card">
+        <h1>Create Classroom</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="quiz-btn-gradient">Create Classroom</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

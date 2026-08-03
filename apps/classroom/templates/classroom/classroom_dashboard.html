@@ -1,0 +1,238 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block classroom_content %}
+
+{% if is_teacher %}
+<div class="classroom-stream">
+
+    <h2>Dashboard</h2>
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+
+            <h3>{{ total_students }}</h3>
+
+            <p>No. of Students</p>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <h3>{{ total_quizzes }}</h3>
+
+            <p>No. of Quizzes</p>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <h3>{{ total_assignments }}</h3>
+
+            <p>No. of Assignments</p>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <h3>{{ submission_rate|floatformat:1 }}%</h3>
+
+            <p>Submission Rate</p>
+
+        </div>
+
+    </div>
+
+    <div class="quiz-section" style="border: 2px solid #2d69bf; margin-bottom: 0px;">
+
+        <h3 style="color:#fff;font-size:1.5rem;">
+            Average Score Per Quiz
+        </h3>
+
+        <table class="classroom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Quiz</th>
+
+                    <th>Average</th>
+
+                    <th>Attempts</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in quiz_averages %}
+
+                <tr>
+
+                    <td>
+
+                        {{ row.quiz.classwork.title }}
+
+                    </td>
+
+                    <td>
+
+                        {{ row.average|floatformat:1 }}%
+
+                    </td>
+
+                    <td>
+
+                        {{ row.attempts }}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="3">
+
+                        No quiz attempts yet.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="quiz-section" style="border: 2px solid #2d69bf; margin-bottom: 0px;">
+
+        <h3 style="color:#fff;font-size:1.5rem;">
+            Students Needing Attention
+        </h3>
+
+        {% if students_needing_attention %}
+
+            <table class="classroom-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Student</th>
+                        <th>Average Quiz</th>
+                        <th>Missing Assignments</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for row in students_needing_attention %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ row.student.get_full_name|default:row.student.username }}
+
+                        </td>
+
+                        <td>
+
+                            {{ row.average|floatformat:1 }}%
+
+                        </td>
+
+                        <td>
+
+                            {{ row.missing }}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <p style="color:#fff;">
+                🎉 None. All students are doing well!
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="quiz-section" style="border: 2px solid #2d69bf; margin-bottom: 0px;">
+
+        <h3 style="color:#fff;font-size:1.5rem;">
+            Recent Classroom Activity
+        </h3>
+
+        <div class="activity-feed">
+
+            {% for submission in recent_submissions %}
+
+            <div class="activity-item">
+
+                📁
+                <strong>{{ submission.student.get_full_name|default:submission.student.username }}</strong>
+                submitted
+                <strong>{{ submission.assignment.classwork.title }}</strong>
+
+            </div>
+
+            {% endfor %}
+
+            {% for attempt in recent_attempts %}
+
+            <div class="activity-item">
+
+                📝
+                <strong>{{ attempt.student.get_full_name|default:attempt.student.username }}</strong>
+                completed
+                <strong>{{ attempt.quiz.classwork.title }}</strong>
+
+            </div>
+
+            {% endfor %}
+
+            {% for post in recent_posts %}
+
+            <div class="activity-item">
+
+                📢
+                {{ post.get_post_type_display }}
+                posted by
+                <strong>{{ post.author.get_full_name|default:post.author.username }}</strong>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% endif %}
+
+{% endblock %}

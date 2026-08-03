@@ -1,0 +1,29 @@
+{% load static %}
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="nav-dropdown">
+      <p class="nav-dropdown-btn">☰</p>
+      <div class="nav-dropdown-menu">
+          <a href="{% url 'classroom:classroom_list' %}">
+              🏫 Classrooms
+          </a>
+          <a href="#">
+              📝 To-do
+          </a>
+          <a href="#">
+              📊 Grades
+          </a>
+      </div>
+    </div>
+    <div>
+      <a href="{% url 'classroom:classroom_list' %}" class="brand">
+        <img src="{% static 'images/navlogo.png' %}" alt="PlayMate LMS Logo" class="logo" style ="height: 50px; width: auto; margin-top: 10px;">
+      </a>
+    </div>
+  </div>
+
+  <div class="navbar-right">
+    <span class="welcome" style="color: #fff;">Welcome Space Cadet, {{ user.username }}!</span>
+    <a href="{% url 'accounts:logout' %}" class="logout">Logout</a>
+  </div>
+</nav>

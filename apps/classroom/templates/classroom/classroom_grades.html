@@ -1,0 +1,104 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block title %}Grades{% endblock %}
+
+{% block classroom_content %}
+
+
+
+<div class="classroom-stream">
+
+    <div class="classroom-content-header">
+
+        <h2>Grades</h2>
+
+    </div>
+
+    <table class="classroom-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Student</th>
+                <th>Quiz Average</th>
+                <th>Assignment Average</th>
+                <th>Overall</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for row in grade_rows %}
+
+            <tr>
+
+                <td>
+                    <a href="{% url 'classroom:student_grades' classroom.id row.student.id %}">
+
+                        {{ row.student.get_full_name|default:row.student.username }}
+
+                    </a>
+                </td>
+
+                <td>
+
+                    {% if row.quiz_average is not None %}
+                        <span class="grade-badge">
+                            {{ row.quiz_average|floatformat:1 }}%
+                        </span>
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if row.assignment_average is not None %}
+                        <span class="grade-badge">
+                            {{ row.assignment_average|floatformat:1 }}%
+                        </span>
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if row.overall is not None %}
+                        <span class="grade-badge grade-overall">
+                            {{ row.overall|floatformat:1 }}%
+                        </span>
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="4" class="empty-row">
+
+                    No students enrolled.
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

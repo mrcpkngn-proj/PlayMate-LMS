@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Join Classroom
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-form-container">
+
+    <div class="classroom-form-card">
+
+        <h1>Join Classroom</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+
+                <label for="class_code">Class Code</label>
+
+                <input
+                    type="text"
+                    id="class_code"
+                    name="class_code"
+                    class="classroom-input"
+                    placeholder="Enter classroom code"
+                    maxlength="8"
+                    required>
+
+            </div>
+
+            <button
+                type="submit"
+                class="classroom-dashboard-btn">
+                Join Classroom
+            </button>
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

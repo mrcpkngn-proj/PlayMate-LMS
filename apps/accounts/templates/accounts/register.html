@@ -1,0 +1,192 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>PlayMate LMS | Register</title>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="cursor-glow"></div>
+
+<div class="login-page">
+
+    <!-- ========================================= -->
+    <!-- NAVBAR -->
+    <!-- ========================================= -->
+
+    <nav class="login-navbar">
+
+        <div class="nav-left">
+
+            <img
+                src="{% static 'images/navlogo.png' %}"
+                alt="PlayMate"
+                class="nav-logo">
+
+            <div class="nav-buttons">
+
+                <a href="{% url 'accounts:login' %}" class="nav-btn">
+                    Login
+                </a>
+
+                <a href="{% url 'accounts:register' %}" class="nav-btn active">
+                    Register
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="nav-right">
+
+            <a href="#">About</a>
+
+            <img
+                src="{% static 'images/settings.png' %}"
+                class="settings-icon"
+                alt="Settings">
+
+        </div>
+
+    </nav>
+
+    <!-- ========================================= -->
+    <!-- CONTENT -->
+    <!-- ========================================= -->
+
+    <div class="login-content">
+
+        <!-- LEFT -->
+
+        <div class="login-left">
+
+            <div class="login-card">
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <label for="id_username">
+                        Username
+                    </label>
+
+                    {{ form.username }}
+
+                    {% if form.username.errors %}
+                    <small class="field-error">
+                        {{ form.username.errors }}
+                    </small>
+                    {% endif %}
+
+                    <label for="id_email">
+                        Email
+                    </label>
+
+                    {{ form.email }}
+
+                    {% if form.email.errors %}
+                    <small class="field-error">
+                        {{ form.email.errors }}
+                    </small>
+                    {% endif %}
+
+                    <label for="id_password1">
+                        Password
+                    </label>
+
+                    {{ form.password1 }}
+
+                    {% if form.password1.errors %}
+                    <small class="field-error">
+                        {{ form.password1.errors }}
+                    </small>
+                    {% endif %}
+
+                    <label for="id_password2">
+                        Confirm Password
+                    </label>
+
+                    {{ form.password2 }}
+
+                    {% if form.password2.errors %}
+                    <small class="field-error">
+                        {{ form.password2.errors }}
+                    </small>
+                    {% endif %}
+                    <div class="login-buttons">
+                        <button
+                            type="submit"
+                            class="btn-orange">
+                            Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="login-right">
+            <div class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="PlayMate LMS" class="img-logo">
+
+                <img src="{% static 'images/logo-text.png' %}" class="logo-text">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const glow = document.querySelector('.cursor-glow');
+
+document.addEventListener('mousemove', e => {
+    glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+});
+
+document.addEventListener('mouseover', e => {
+
+    const tag = e.target.tagName.toLowerCase();
+
+    const isInteractive =
+        tag === 'input' ||
+        tag === 'textarea' ||
+        tag === 'a' ||
+        tag === 'button' ||
+        window.getComputedStyle(e.target).cursor === 'pointer' ||
+        window.getComputedStyle(e.target).cursor === 'text';
+
+    if (isInteractive) {
+        glow.classList.add('hidden');
+        document.body.style.cursor = '';
+    }
+    else {
+        glow.classList.remove('hidden');
+        document.body.style.cursor = 'none';
+    }
+
+});
+</script>
+
+</body>
+</html>

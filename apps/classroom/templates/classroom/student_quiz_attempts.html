@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ quiz.classwork.title }} Attempts
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-content">
+
+    <div class="classroom-header">
+
+        <div>
+
+            <h1>{{ quiz.classwork.title }}</h1>
+
+            <p>
+
+                Student:
+                    {{ student.get_full_name|default:student.username }}
+
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'classroom:student_grades' classroom.id student.id %}"
+            class="classroom-dashboard-btn">
+
+            ← Back
+
+        </a>
+
+    </div>
+
+    <table class="classroom-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Attempt</th>
+                <th>Submitted</th>
+                <th>Score</th>
+                <th>Percentage</th>
+                <th></th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for row in attempt_rows %}
+
+            <tr>
+
+                <td>
+
+                    Attempt {{ forloop.counter }}
+
+                </td>
+
+                <td>
+
+                    {{ row.attempt.submitted_at|date:"M d, Y • h:i A" }}
+
+                </td>
+
+                <td>
+
+                    {{ row.attempt.score }} / {{ total_points }}
+
+                </td>
+
+                <td>
+
+                    <span class="grade-badge">
+
+                        {{ row.percentage|floatformat:1 }}%
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="{% url 'quiz:quiz_result' row.attempt.id %}"
+                        class="classroom-dashboard-btn">
+
+                        View Result
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    class="empty-row">
+
+                    No completed attempts.
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

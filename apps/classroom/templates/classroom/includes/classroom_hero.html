@@ -1,0 +1,62 @@
+{% load static %}
+
+<div class="back">
+    <a href="{% url 'classroom:classroom_list' %}"
+       class="classroom-dashboard-btn back">
+        ← Back to Classrooms
+    </a>
+</div>
+
+<div class="classroom-hero"
+{% if classroom.cover_image %}
+    style="background-image:url('{{ classroom.cover_image.url }}');"
+{% else %}
+    style="background-image:url('{% static "images/default-classroom-banner.png" %}');"
+{% endif %}>
+
+    <div class="classroom-overlay">
+
+        <div class="classroom-hero-header">
+
+            <div class="classroom-info">
+
+                <h1>{{ classroom.name }}</h1>
+
+                <p>{{ classroom.description }}</p>
+                <p>Join Code: {{ classroom.class_code}}</p>
+
+                <div class="classroom-meta">
+
+                    <div class="classroom-stat">
+                        👨‍🏫 Classroom Owner: {{ classroom.teacher.username }}
+                    </div>
+
+                    <div class="classroom-stat">
+                        👥 {{ classroom.members.count }} Student{{ classroom.members.count|pluralize }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if request.user == classroom.teacher %}
+            <div class="classroom-detail-actions">
+
+                <a href="{% url 'classroom:edit_classroom' classroom.pk %}"
+                   class="classroom-dashboard-btn">
+                    Edit
+                </a>
+
+                <a href="{% url 'classroom:delete_classroom' classroom.pk %}"
+                   class="classroom-dashboard-btn delete">
+                    Delete
+                </a>
+
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>

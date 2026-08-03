@@ -1,0 +1,33 @@
+.mascot-guide {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.mascot-character {
+  width: 80px;
+  height: auto;
+  image-rendering: pixelated; /* keep retro look */
+  animation: bounce 2s infinite;
+}
+
+.mascot-dialogue {
+  background: rgba(0,0,40,0.9);
+  border: 2px solid #72a4f0;
+  border-radius: 8px;
+  padding: 12px;
+  max-width: 280px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}

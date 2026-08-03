@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+{% endblock %}
+
+{% block title %}
+    {% if quiz %}
+        Edit Quiz
+    {% else %}
+        Create Quiz
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="quiz-page">
+
+    <div class="quiz-dashboard-header">
+        <h1 class="quiz-dashboard-title">
+            {% if quiz %}
+                Edit Quiz
+            {% else %}
+                Create Quiz
+            {% endif %}
+        </h1>
+    </div>
+
+    <form method="post" id="quiz-form">
+        {% csrf_token %}
+
+        <!-- =========================
+             CLASSWORK DETAILS
+        ========================== -->
+
+        <fieldset class="quiz-section">
+            <legend>Classwork Details</legend>
+
+            <div class="django-form-row-styling">
+                {{ classwork_form.as_p }}
+            </div>
+        </fieldset>
+
+        <!-- =========================
+             QUIZ DETAILS
+        ========================== -->
+
+        <fieldset class="quiz-section">
+            <legend>Quiz Settings</legend>
+
+            <div class="django-form-row-styling">
+                {{ quiz_form.as_p }}
+            </div>
+        </fieldset>
+
+        <!-- =========================
+             AI SECTION
+        ========================== -->
+
+        <div class="quiz-section">
+
+            <h3>AI Smart Assist</h3>
+
+            <label for="topics">
+                Enter topics (comma separated)
+            </label>
+
+            <input
+                type="text"
+                id="topics"
+                placeholder="e.g. Fractions, Algebra, Geometry">
+
+            <button
+                type="button"
+                id="suggest-questions"
+                class="quiz-dashboard-btn">
+
+                Suggest Questions
+
+            </button>
+
+            <div id="suggestions-preview" style="display:none; margin-top:20px;">
+
+                <h3>Suggested Questions</h3>
+
+                <div id="preview-list"></div>
+
+                <div class="quiz-actions">
+
+                    <button
+                        type="button"
+                        id="confirm-suggestions"
+                        class="quiz-dashboard-btn">
+
+                        Add to Quiz
+
+                    </button>
+
+                    <button
+                        type="button"
+                        id="reject-suggestions"
+                        class="quiz-dashboard-btn">
+
+                        Discard
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- =========================
+             QUESTIONS
+        ========================== -->
+
+        <h2 class="quiz-title">Quiz Questions</h2>
+
+        <div id="questions-container"></div>
+
+        <div class="quiz-divider">
+
+            <button
+                type="button"
+                id="add-question"
+                class="quiz-dashboard-btn">
+
+                + Add Question
+
+            </button>
+
+        </div>
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <div class="quiz-actions">
+
+            <button
+                type="submit"
+                class="quiz-dashboard-btn">
+
+                {% if quiz %}
+                    Save Changes
+                {% else %}
+                    Create Quiz
+                {% endif %}
+
+            </button>
+            
+            <div class="quiz-dashboard-btn">
+              <a
+                  href="{% url 'classroom:classroom_classwork' classroom.id %}">
+                  Cancel
+              </a>
+          </div>
+        </div>
+
+    </form>
+
+</div>
+
+{{ quiz_data|json_script:"quiz-data" }}
+
+<!-- JavaScript Template Block: Dynamic Question Element -->
+<template id="question-template">
+    <fieldset class="question-block">
+        <legend style="font-family: 'Press Start 2P', cursive; font-size: 12px; color: #facc15; padding: 0 10px;">
+            Question <span class="question-number"></span>
+        </legend>
+
+        <input type="hidden" class="question-id" name="question_id[]">
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 15px;">
+            <p style="margin:0;">
+                <label style="display:block; font-weight: bold; margin-bottom: 6px; color: #adc0f5;">Timer (seconds):</label>
+                <input type="number" name="question_duration[]" value="30" min="5" max="600" required style="width: 100%; box-sizing: border-box; background: #000047; border: 2px solid #29466d; color: #fff; padding: 10px; border-radius: 4px;">
+            </p>
+
+            <p style="margin:0;">
+                <label style="display:block; font-weight: bold; margin-bottom: 6px; color: #adc0f5;">Points:</label>
+                <input type="number" class="question-points" name="question_points[]" value="1" min="1" required style="width: 100%; box-sizing: border-box; background: #000047; border: 2px solid #29466d; color: #fff; padding: 10px; border-radius: 4px;">
+            </p>
+        </div>
+
+        <p style="margin-bottom: 20px;">
+            <label style="display:block; font-weight: bold; margin-bottom: 6px; color: #adc0f5;">Question Text:</label>
+            <textarea class="question-text" name="question_text[]" rows="3" required style="width: 100%; box-sizing: border-box; background: #000047; border: 2px solid #29466d; color: #fff; padding: 10px; border-radius: 4px; resize: vertical; min-height: 70px;"></textarea>
+        </p>
+
+        <!-- Selection Settings Box -->
+        <p style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 4px; border: 1px dashed #29466d; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <button type="button" class="set-single-answer quiz-dashboard-btn" style="margin: 0; padding: 8px 16px; font-size: 10px;">Single Correct Answer</button>
+            <button type="button" class="set-multiple-answers quiz-dashboard-btn" style="margin: 0; padding: 8px 16px; font-size: 10px; background: linear-gradient(180deg, #9da9f7 0%, #2f5184 100%); border-color: #adc0f5;">Multiple Correct Answers</button>
+            <!-- Hidden selector configuration -->
+            <input type="hidden" class="answer-type" name="question_type[]" value="single">
+        </p>
+
+        <label style="display:block; font-weight: bold; margin-bottom: 8px; color: #adc0f5;">Choices:</label>
+        <div class="choices-container" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;"></div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid #29466d; padding-top: 15px;">
+            <button type="button" class="add-choice quiz-dashboard-btn" style="margin:0; padding: 8px 16px; font-size: 11px;">+ Add Choice</button>
+            <button type="button" class="remove-question quiz-dashboard-btn" style="margin:0; padding: 8px 16px; font-size: 11px; background: linear-gradient(180deg, #ed7070 0%, #891e1e 100%); border-color: #f87171;">Remove Question</button>
+        </div>
+    </fieldset>
+</template>
+
+<!-- JavaScript Template Block: Dynamic Choice Field Line Element -->
+<template id="choice-template">
+    <p class="choice-row" style="display: flex; gap: 15px; align-items: center; width: 100%; box-sizing: border-box; background: rgba(41, 70, 109, 0.3); border: 1px solid #29466d; padding: 12px; margin: 0; border-radius: 4px;">
+        <input type="hidden" class="choice-id">
+        
+        <input type="text" class="choice-text" placeholder="Choice text" required style="flex: 1; min-width: 150px; background: #000047; border: 2px solid #29466d; color: #fff; padding: 8px 12px; border-radius: 4px;">
+        
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff; font-family: 'Press Start 2P', cursive; font-size: 10px; background: #29466d; border: 1px solid #9ec2f9; padding: 8px 12px; border-radius: 2px; margin: 0; white-space: nowrap;">
+            <input type="radio" class="correct-choice" style="accent-color: #facc15; margin: 0;">
+            Correct answer
+        </label>
+        
+        <button type="button" class="remove-choice quiz-dashboard-btn" style="margin: 0; padding: 8px 14px; font-size: 10px; background: linear-gradient(180deg, #ed7070 0%, #891e1e 100%); border-color: #f87171;">Remove</button>
+    </p>
+</template>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/quiz_form.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}Quiz Results{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class='quiz-container-results'>
+  <div class="quiz-result-header">
+      <h1 style="color:#facc15;">
+          Results for {{ attempt.quiz.classwork.title }}
+      </h1>
+
+      <h2>{{ attempt.score|floatformat:2 }}/{{ total_points|floatformat:2 }}</h2>
+
+      {% if is_teacher_attempt %}
+          <p class="result-status">🧪 Teacher Test Run</p>
+          <p>This attempt is only for testing the quiz.</p>
+
+          <a
+              href="{% url 'quiz:take_quiz' attempt.quiz.id %}"
+              class="quiz-action-btn-results">
+              Run Quiz Again
+          </a>
+          <br><br>
+
+      {% elif is_teacher_view %}
+          <p class="result-status">👨‍🏫 Viewing Student Attempt</p>
+
+          <p><strong>Student:</strong>{{ attempt.student.get_full_name|default:attempt.student.username }}</p>
+
+      {% else %}
+
+          <p class="result-status">🎓 Student Result</p>
+
+          <p>Attempts Remaining:<strong>{{ attempts_left }}/{{ max_attempts }}</strong></p>
+
+          {% if attempts_left > 0 %}
+
+              <a
+                  href="{% url 'quiz:take_quiz' attempt.quiz.id %}"
+                  class="quiz-action-btn-results">
+                  Retry Quiz
+              </a>
+
+          {% else %}
+
+              <p>You have used all available attempts.</p>
+
+          {% endif %}
+
+      {% endif %}
+
+  </div>
+
+  <!-- Question List Container -->
+  <div class="quiz-questions-list">
+  {% for question in questions %}
+    <!-- Individual Question Card Wrapper -->
+    <div class="question-card">
+      <div class="question-card-header">
+        <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+        <span class="question-points">Points: {{ question.points|floatformat:2 }}</span>
+      </div>
+      
+      <div class="question-card-body">
+        <p class="section-subtitle">Your selected answers:</p>
+        <ul class="results-choices-list">
+          {% for choice in question.choices.all %}
+            {% if choice.id in selected_by_question|get_item:question.id %}
+              <li class="choice-item {% if choice.is_correct %}correct{% else %}incorrect{% endif %}">
+                <span class="choice-text">{{ choice.text }}</span>
+                <span class="status-badge">
+                  {% if choice.is_correct %}✅ Correct{% else %}❌ Incorrect{% endif %}
+                </span>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+
+        {% with earned=partial_scores|get_item:question.id %}
+          <div class="score-earned-box">
+            <p>
+              <strong>Score earned:</strong>
+              {% if earned == 0 %}
+                0.00 / {{ question.points|floatformat:2 }} <span class="score-note">(no correct answer/s selected)</span>
+              {% elif earned < question.points %}
+                {{ earned|floatformat:2 }} / {{ question.points|floatformat:2 }} <span class="score-note">(partial points)</span>
+              {% else %}
+                {{ earned|floatformat:2 }} / {{ question.points|floatformat:2 }} <span class="score-note">(full points)</span>
+              {% endif %}
+            </p>
+          </div>
+        {% endwith %}
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+
+  <a href="{{ return_url }}" class="quiz-action-btn-results">
+    {% if is_owner %}
+        Back to Classwork
+    {% else %}
+        Back
+    {% endif %}
+  </a>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Classrooms{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-dashboard">
+
+    <div class="classroom-header">
+
+        <h1 class="quiz-dashboard-title">
+            My Classrooms
+        </h1>
+
+        <div class="classroom-actions">
+
+            <a href="{% url 'classroom:create_classroom' %}"
+               class="classroom-dashboard-btn">
+                + Create Classroom
+            </a>
+
+            <a href="{% url 'classroom:join_classroom' %}"
+               class="classroom-dashboard-btn secondary">
+                Join Classroom
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="classroom-grid">
+
+        {% for classroom in classrooms %}
+
+        <div class="classroom-card">
+
+            <div class="classroom-banner">
+
+                {% if classroom.cover_image %}
+                    <img
+                        src="{{ classroom.cover_image.url }}"
+                        alt="{{ classroom.name }}"
+                        class="classroom-banner-img">
+                {% else %}
+                    <img
+                        src="{% static 'images/default-classroom-banner.png' %}"
+                        alt="Default Banner"
+                        class="classroom-banner-img">
+                {% endif %}
+
+            </div>
+
+            <div class="classroom-body">
+
+                <h2>{{ classroom.name }}</h2>
+
+                <p>{{ classroom.description }}</p>
+
+                <small>
+                    Join Code:
+                    <strong>{{ classroom.class_code }}</strong>
+                </small>
+
+            </div>
+
+            <div class="classroom-footer">
+                {% if request.user == classroom.teacher %}
+
+                <a href="{% url 'classroom:classroom_dashboard' classroom.id %}">
+                    Open
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'classroom:student_dashboard' classroom.id %}">
+                    Open
+                </a>
+
+                {% endif %}
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-state">
+
+            <h2>No classrooms yet</h2>
+
+            <p>Create one or join using a classroom code.</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

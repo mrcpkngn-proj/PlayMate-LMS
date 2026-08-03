@@ -1,0 +1,166 @@
+{% extends "classroom/classroom_base.html" %}
+
+{% block title %}
+{{ student.get_full_name|default:student.username }}
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-content">
+    <div>
+        <div class="classroom-header grades">
+            <h2>Grade Breakdown</h2>
+        </div>
+        <div class='quiz-section grades'>
+            <p>Student Name: {{ student.get_full_name|default:student.username }}</p>
+            <p>{{ student.email }}</p>
+        </div>
+
+    </div>
+
+    <div class='quiz-section'>
+        <h3 style="color:#fff; font-size: 1.5rem;">Quizzes</h3>
+
+        <table class="classroom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Quiz</th>
+                    <th>Average</th>
+                    <th>Overview</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for row in quiz_rows %}
+
+            <tr>
+
+                <td>
+
+                    {{ row.quiz.classwork.title }}
+
+                </td>
+
+                <td>
+
+                    {{ row.highest_percentage|floatformat:1 }}%
+
+                </td>
+
+                <td>
+                    <a href="{% url 'classroom:student_quiz_attempts' classroom.id student.id row.quiz.id %}">
+
+                        View ({{ row.attempt_count }})
+
+                    </a>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class='quiz-section'>
+        <h3 style="color:#fff; font-size: 1.5rem;">Assignments</h3>
+
+        <table class="classroom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Assignment</th>
+                    <th>Grade</th>
+                    <th>Feedback</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for submission in submissions %}
+
+                <tr>
+
+                    <td>
+
+                        {{ submission.assignment.classwork.title }}
+
+                    </td>
+
+                    <td>
+
+                        {% if submission.grade %}
+
+                            {{ submission.grade }}
+
+                            /
+
+                            {{ submission.assignment.points }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if submission.feedback %}
+
+                            {{ submission.feedback }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="3" class="empty-row">
+
+                        No assignment submissions.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+    
+    </div>
+
+    <div class="assignment-footer">
+        <a
+            href="{% url 'classroom:classroom_grades' classroom.id %}"
+            class="classroom-dashboard-btn">
+            ← Back
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

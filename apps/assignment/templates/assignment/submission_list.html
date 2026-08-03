@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ assignment.classwork.title }} - Submissions
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+<link rel="stylesheet" href="{% static 'css/assignment.css' %}">
+<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="assignment-page">
+
+    <div class="classroom-header">
+
+        <div>
+            <h1>📁 {{ assignment.classwork.title }}</h1>
+
+            <p class="assignment-due">
+                Due:
+                {{ assignment.classwork.due_date|date:"M d, Y • h:i A" }}
+            </p>
+        </div>
+
+        <span class="assignment-status teacher">
+            {{ submissions.count }} Submission{{ submissions.count|pluralize }}
+        </span>
+
+    </div>
+
+    <div class="assignment-section">
+
+        <h2>Student Submissions</h2>
+
+        
+        {% if submissions %}
+            {% for submission in submissions %}
+            <div class='attachment-item-submission'>
+                <div class="submission-row">
+                    <div class="submission-info">
+                        <h3>👨‍🎓 {{ submission.student.get_full_name|default:submission.student.username }}</h3>
+                        <p>
+                            Submitted:
+                            {{ submission.submitted_at|date:"M d, Y • h:i A" }}
+                        </p>
+                        {% if submission.grade %}
+                            <span class="assignment-status submitted">
+                                Grade: {{ submission.grade }} / {{ assignment.points }}
+                            </span>
+                        {% else %}
+                            <span class="assignment-status pending">
+                                Awaiting Grade
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="submission-actions">
+                        <a href="{{ submission.submission_file.url }}"
+                        class="classroom-dashboard-btn"
+                        download>
+                            Download
+                        </a>
+                        <a href="{% url 'assignment:grade_submission' submission.id %}"
+                        class="classroom-dashboard-btn">
+                            Grade
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% if not forloop.last %}
+            <hr class="submission-divider">
+        {% endif %}
+
+        {% endfor %}
+
+        {% else %}
+
+            <p>
+                No students have submitted this assignment yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    <div class="assignment-footer">
+
+        <a
+            href="{% url 'assignment:assignment_detail' assignment.id %}"
+            class="classroom-dashboard-btn">
+
+            ← Back to Assignment
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

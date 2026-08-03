@@ -1,0 +1,35 @@
+🟩 Authentication
+🟩 Classroom Management
+🟩 Join Code
+🟩 Classwork
+🟩 Quiz System
+🟩 Assignment System
+🟩 Grading
+🟩 Gradebook
+🟩 Teacher Dashboard
+🟨 Student Dashboard
+🟨 Stream UI
+⬜ Notifications
+⬜ Analytics Charts
+⬜ AI Recommendations
+⬜ Final UI Polish
+⬜ Testing
+⬜ Deployment
+
+<<<--- Dashboard --->>>
+Teacher Side
+✅ Dashboard
+⏳ Analytics (Hardest Quizzes, Assignment Completion, Performance Distribution)
+⏳ Export Grades (CSV)
+⏳ Search/Filter students
+Student Side
+⏳ Dashboard
+⏳ Analytics
+⏳ Personal progress
+⏳ Weak/Strong topics
+Shared
+⏳ Finish Stream
+⏳ Notifications
+⏳ Sidebar AI Assistant
+⏳ Structured Learning Analytics recommendations
+⏳ Final UI polish
