@@ -1,0 +1,25 @@
+"The system implements an AI-enhanced educational 
+assistant that combines deterministic learning 
+analytics with extensible natural language 
+processing. The current implementation uses 
+rule-based educational reasoning, while the 
+architecture is designed to support future 
+integration with large language models through 
+API-based services."
+
+
+If a panel member asks:
+
+"Why is this AI?"
+
+You can confidently answer:
+
+"A.L.E.C. is a rule-based intelligence system/AI. It analyzes structured student performance data,
+applies predefined educational decision rules,
+identifies learning patterns, evaluates 
+student risk, and generates personalized 
+recommendations and learning insights. Unlike
+generative AI, every recommendation is 
+explainable and traceable to measurable 
+student performance."   
+

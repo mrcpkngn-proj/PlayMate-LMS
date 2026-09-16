@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Notifications | PlayMate LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-header">
+
+    <h1>🔔 Notifications</h1>
+
+    <p>
+        Stay updated with your classrooms, assignments, quizzes,
+        and other activities.
+    </p>
+
+</div>
+
+
+<div class="profile-form-container">
+
+    <div class="classroom-form-card profile">
+
+        {% if notifications %}
+
+            {% for notification in notifications %}
+
+                <a
+                    href="{% url 'notifications:notification_redirect' notification.id %}"
+                    class="notification-page-item">
+
+                    <div class="notification-page-icon">
+                        🔔
+                    </div>
+
+                    <div class="notification-page-content">
+
+                        <strong>
+                            {{ notification.title }}
+                        </strong>
+
+                        {% if notification.classroom %}
+
+                            <small>
+                                🏫 {{ notification.classroom.name }}
+                            </small>
+
+                        {% endif %}
+
+                        <p>
+                            {{ notification.message }}
+                        </p>
+
+                        <span>
+                            {{ notification.created_at|timesince }} ago
+                        </span>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="notification-page-empty">
+
+                <div>🚀</div>
+
+                <h2>No notifications</h2>
+
+                <p>
+                    You're all caught up, Space Cadet!
+                </p>
+
+            </div>
+
+        {% endif %}
+
+            <div class="profile-actions">
+
+                <button
+                    type="button"
+                    class="classroom-dashboard-btn"
+                    onclick="history.back();">
+                    ← Back
+                </button>
+
+                <a
+                    href="{% url 'classroom:classroom_list' %}"
+                    class="classroom-dashboard-btn">
+                    🏫 Back to Classrooms
+                </a>
+
+            </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

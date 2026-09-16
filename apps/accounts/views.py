@@ -1,7 +1,10 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from .forms import RegisterForm, ProfileForm, SettingsForm
+from django.contrib.auth.decorators import login_required
+from .models import UserSettings
+
 
 def login_view(request):
     # If already logged in, go straight to quiz dashboard
@@ -40,6 +43,96 @@ def register_view(request):
         {"form": form},
     )
 
+
 def logout_view(request):
     logout(request)
     return redirect("accounts:login")
+
+
+@login_required
+def profile_view(request):
+
+    return render(
+        request,
+        "accounts/profile.html",
+    )
+
+
+@login_required
+def edit_profile(request):
+
+    if request.method == "POST":
+
+        form = ProfileForm(
+            request.POST,
+            instance=request.user,
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect("accounts:profile")
+
+    else:
+
+        form = ProfileForm(
+            instance=request.user,
+        )
+
+    return render(
+        request,
+        "accounts/edit_profile.html",
+        {
+            "form": form,
+        },
+    )
+
+
+@login_required
+def settings_view(request):
+
+    settings, created = UserSettings.objects.get_or_create(
+        user=request.user
+    )
+
+    if request.method == "POST":
+
+        form = SettingsForm(
+            request.POST,
+            instance=settings,
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect("accounts:settings")
+
+    else:
+
+        form = SettingsForm(
+            instance=settings,
+        )
+
+    return render(
+        request,
+        "accounts/settings.html",
+        {
+            "form": form,
+        },
+    )
+
+
+def password_recovery(request):
+    return render(
+        request,
+        "accounts/password_recovery.html"
+    )
+
+
+def about_view(request):
+    return render(
+        request,
+        "accounts/about.html",
+    )

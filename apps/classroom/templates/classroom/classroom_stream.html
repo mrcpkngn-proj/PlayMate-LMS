@@ -33,7 +33,7 @@
 
             {% if post.post_type == "announcement" %}
 
-            <div class="quiz-section stream-announcement" style="border: 2px solid #2d69bf;">
+            <div class="quiz-section stream-announcement" style="border: 2px solid #2d69bf; border-left: 6px solid #facc15;">
 
                 <div class="stream-announcement-header">
 
@@ -49,7 +49,7 @@
 
                                 {{ post.author.get_full_name|default:post.author.username }}
                                 •
-                                {{ post.created_at|date:"M d, Y • h:i A" }}
+                                {{ post.created_at|timesince }} ago
 
                             </small>
 
@@ -81,7 +81,7 @@
 
             {% else %}
 
-            <div class="quiz-section stream-classwork dashboard">
+            <div class="quiz-section stream-classwork dashboard" style="border-left: 6px solid #facc15;">
 
                 <div class="stream-left">
 
@@ -95,7 +95,7 @@
 
                         <strong>
 
-                            {{ post.get_post_type_display }}
+                            Classwork: {{ post.get_post_type_display }}
 
                         </strong>
 
@@ -103,7 +103,7 @@
 
                             {{ post.author.get_full_name|default:post.author.username }}
                             •
-                            {{ post.created_at|date:"M d, Y • h:i A" }}
+                            {{ post.created_at|timesince }} ago
 
                         </small>
 

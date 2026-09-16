@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Profile | PlayMate LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-header">
+    <h1>👨‍🚀 My Profile</h1>
+    <p>View your account information.</p>
+</div>
+
+<div class="profile-form-container">
+
+    <div class="classroom-form-card profile">
+
+        <div class="profile-info">
+
+            <div class="profile-field">
+                <label>Username</label>
+                <p>{{ user.username }}</p>
+            </div>
+
+            <div class="profile-field">
+                <label>First Name</label>
+                <p>
+                    {{ user.first_name|default:"Not provided" }}
+                </p>
+            </div>
+
+            <div class="profile-field">
+                <label>Last Name</label>
+                <p>
+                    {{ user.last_name|default:"Not provided" }}
+                </p>
+            </div>
+
+            <div class="profile-field">
+                <label>Email</label>
+                <p>{{ user.email }}</p>
+            </div>
+
+        </div>
+
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="profile-actions">
+
+            <a
+                href="{% url 'classroom:classroom_list' %}"
+                class="classroom-dashboard-btn">
+
+                ← Back
+
+            </a>
+
+            <a
+                href="{% url 'accounts:edit_profile' %}"
+                class="classroom-dashboard-btn">
+
+                Edit Profile
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

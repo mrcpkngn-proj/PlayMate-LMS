@@ -624,6 +624,11 @@
     border-radius: 12px;
     padding: 24px;
     margin: 24px 0px;
+    overflow-x: auto;
+}
+
+.quiz-section::-webkit-scrollbar {
+    display: none;
 }
 
 .quiz-section legend {
@@ -724,4 +729,481 @@
     font-size:1rem;
     font-weight:bold;
     letter-spacing:.5px;
+}
+
+
+
+/* =========================================================
+   QUIZ MAKER — SMALLER / RESPONSIVE PAGE VERSION
+   ========================================================= */
+
+/*
+   IMPORTANT:
+   The sidebar occupies approximately 25vw.
+   The quiz content therefore has approximately 75vw available.
+   These rules shrink the quiz maker inside that content area
+   without changing the existing desktop design.
+*/
+
+
+/* =========================================================
+   MEDIUM CONTENT WIDTH
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .quiz-page {
+        width: 100%;
+        box-sizing: border-box;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+
+    /* -------------------------
+       HEADER
+    ------------------------- */
+
+    .quiz-dashboard-header {
+        gap: 12px;
+    }
+
+    .quiz-dashboard-title {
+        font-size: 20px;
+    }
+
+    .quiz-guide-btn {
+        padding: 8px 12px;
+        font-size: 9px;
+    }
+
+
+    /* -------------------------
+       MAIN SECTIONS
+    ------------------------- */
+
+    .quiz-section {
+        padding: 16px;
+    }
+
+
+    /* -------------------------
+       QUESTION BLOCK
+    ------------------------- */
+
+    .question-block {
+        padding: 15px;
+    }
+
+    .question-block legend {
+        font-size: 11px !important;
+    }
+
+
+    /* -------------------------
+       QUESTION CONTROLS
+    ------------------------- */
+
+    .question-block input,
+    .question-block textarea {
+        font-size: 14px;
+    }
+
+
+    /* -------------------------
+       BUTTONS
+    ------------------------- */
+
+    .quiz-dashboard-btn {
+        padding: 8px 13px;
+        font-size: 10px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL CONTENT WIDTH
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .quiz-page {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+
+    /* -------------------------
+       HEADER
+    ------------------------- */
+
+    .quiz-dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .quiz-header-left {
+        width: 100%;
+    }
+
+    .quiz-dashboard-title {
+        font-size: 18px;
+    }
+
+    .quiz-guide-btn {
+        align-self: flex-start;
+        padding: 8px 12px;
+        font-size: 8px;
+    }
+
+
+    /* -------------------------
+       FORM SECTIONS
+    ------------------------- */
+
+    .quiz-section {
+        padding: 14px;
+        margin-bottom: 15px;
+    }
+
+    .quiz-section legend {
+        font-size: 11px;
+    }
+
+
+    /* -------------------------
+       FORM TEXT
+    ------------------------- */
+
+    .django-form-row-styling {
+        font-size: 14px;
+    }
+
+    .django-form-row-styling input,
+    .django-form-row-styling select,
+    .django-form-row-styling textarea {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* -------------------------
+       AI SECTION
+    ------------------------- */
+
+    #topics {
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    #suggest-questions {
+        margin-top: 4px;
+    }
+
+
+    /* -------------------------
+       QUIZ TITLE
+    ------------------------- */
+
+    .quiz-title {
+        font-size: 17px;
+        margin-top: 18px;
+        margin-bottom: 12px;
+    }
+
+
+    /* -------------------------
+       QUESTION BLOCK
+    ------------------------- */
+
+    .question-block {
+        padding: 13px;
+        margin-bottom: 15px;
+    }
+
+    .question-block legend {
+        font-size: 10px !important;
+    }
+
+
+    /* -------------------------
+       QUESTION INPUTS
+    ------------------------- */
+
+    .question-block textarea {
+        min-height: 60px !important;
+    }
+
+    .question-block input[type="number"],
+    .question-block input[type="text"],
+    .question-block textarea {
+        padding: 8px !important;
+        font-size: 13px;
+    }
+
+
+    /* -------------------------
+       QUESTION BUTTONS
+    ------------------------- */
+
+    .question-block button {
+        font-size: 9px !important;
+    }
+
+    .question-block .set-single-answer,
+    .question-block .set-multiple-answers {
+        padding: 7px 10px !important;
+    }
+
+    .question-block .add-choice,
+    .question-block .remove-question {
+        padding: 7px 11px !important;
+    }
+
+
+    /* -------------------------
+       CHOICES
+    ------------------------- */
+
+    .choice-row {
+        flex-wrap: wrap;
+        gap: 8px !important;
+        padding: 9px !important;
+    }
+
+    .choice-row .choice-text {
+        flex: 1 1 100%;
+        min-width: 0 !important;
+    }
+
+    .choice-row label {
+        font-size: 8px !important;
+        padding: 6px 9px !important;
+    }
+
+    .choice-row .remove-choice {
+        padding: 6px 10px !important;
+    }
+
+
+    /* -------------------------
+       ACTION BUTTONS
+    ------------------------- */
+
+    .quiz-actions {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .quiz-actions .quiz-dashboard-btn {
+        font-size: 9px;
+        padding: 8px 12px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL CONTENT WIDTH
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .quiz-page {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+
+    /* -------------------------
+       HEADER
+    ------------------------- */
+
+    .quiz-dashboard-header {
+        gap: 9px;
+    }
+
+    .quiz-dashboard-title {
+        font-size: 15px;
+    }
+
+    .quiz-guide-btn {
+        width: 100%;
+        font-size: 8px;
+        padding: 8px 10px;
+    }
+
+
+    /* -------------------------
+       SECTIONS
+    ------------------------- */
+
+    .quiz-section {
+        padding: 11px;
+        border-radius: 6px;
+    }
+
+
+    /* -------------------------
+       SECTION HEADINGS
+    ------------------------- */
+
+    .quiz-section h3 {
+        font-size: 12px;
+    }
+
+    .quiz-section legend {
+        font-size: 9px;
+    }
+
+
+    /* -------------------------
+       FORM ELEMENTS
+    ------------------------- */
+
+    .django-form-row-styling {
+        font-size: 13px;
+    }
+
+    .django-form-row-styling input,
+    .django-form-row-styling select,
+    .django-form-row-styling textarea {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+
+    /* -------------------------
+       AI BUTTON
+    ------------------------- */
+
+    #suggest-questions {
+        width: 100%;
+    }
+
+
+    /* -------------------------
+       QUIZ TITLE
+    ------------------------- */
+
+    .quiz-title {
+        font-size: 14px;
+    }
+
+
+    /* -------------------------
+       QUESTION BLOCK
+    ------------------------- */
+
+    .question-block {
+        padding: 10px;
+    }
+
+    .question-block legend {
+        font-size: 9px !important;
+        padding: 0 6px !important;
+    }
+
+
+    /* -------------------------
+       TIMER / POINTS
+    ------------------------- */
+
+    .question-block > div:first-of-type {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+
+
+    /* -------------------------
+       QUESTION TEXT
+    ------------------------- */
+
+    .question-text {
+        min-height: 55px !important;
+    }
+
+
+    /* -------------------------
+       ANSWER TYPE
+    ------------------------- */
+
+    .question-block p[style*="display:flex"] {
+        gap: 6px !important;
+        padding: 8px !important;
+    }
+
+    .question-block .set-single-answer,
+    .question-block .set-multiple-answers {
+        width: 100%;
+        font-size: 8px !important;
+    }
+
+
+    /* -------------------------
+       QUESTION BOTTOM BUTTONS
+    ------------------------- */
+
+    .question-block > div:last-child {
+        flex-direction: column;
+        gap: 7px !important;
+    }
+
+    .question-block .add-choice,
+    .question-block .remove-question {
+        width: 100%;
+        font-size: 8px !important;
+    }
+
+
+    /* -------------------------
+       CHOICE ROW
+    ------------------------- */
+
+    .choice-row {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 7px !important;
+    }
+
+    .choice-row .choice-text {
+        width: 100%;
+    }
+
+    .choice-row label {
+        width: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+        font-size: 8px !important;
+    }
+
+    .choice-row .remove-choice {
+        width: 100%;
+    }
+
+
+    /* -------------------------
+       FOOTER ACTIONS
+    ------------------------- */
+
+    .quiz-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .quiz-actions .quiz-dashboard-btn {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .quiz-actions .quiz-dashboard-btn a {
+        display: block;
+        width: 100%;
+    }
+
 }

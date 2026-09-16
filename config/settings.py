@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'apps.classroom',
     'apps.quiz',
     'apps.accounts',
-    'apps.assignment'
+    'apps.assignment',
+    'apps.notifications',
+    'apps.alec',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.notifications.context_processors.notifications',
+                'apps.alec.context_processors.alec_sidebar',
             ],
         },
     },

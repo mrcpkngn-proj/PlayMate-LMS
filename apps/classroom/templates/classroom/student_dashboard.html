@@ -6,217 +6,350 @@ Student Dashboard
 
 {% block classroom_content %}
 
-<div class="classroom-stream">
+<div class='classroom-stream'>
+    <h2>Dashboard</h2>
+    <div class="dashboard-page">
+        <div class="dashboard-left">
 
-    <h2>Student Dashboard</h2>
+            <div class="dashboard-panel">
 
-    <div class="dashboard-cards">
+                <div class="dashboard-panel-title">
 
-        <div class="dashboard-card">
-            <h3>{{ quiz_average|floatformat:1 }}%</h3>
-            <p>Quiz Average</p>
-        </div>
-
-        <div class="dashboard-card">
-            <h3>{{ completed_quizzes }}</h3>
-            <p>Completed Quizzes</p>
-        </div>
-
-        <div class="dashboard-card">
-            <h3>{{ completed_assignments }}</h3>
-            <p>Assignments Submitted</p>
-        </div>
-
-        <div class="dashboard-card">
-            <h3>{{ pending_assignments.count }}</h3>
-            <p>Pending Assignments</p>
-        </div>
-
-    </div>
-
-    <hr style="margin: 0; margin-top: 20px; background-color: #2d69bf;">
-
-    <div class="dashboard-grid">
-
-        <div class="quiz-section dashboard">
-
-            <h3>Latest Announcement</h3>
-
-            {% if latest_announcement %}
-
-            <div class="announcement-box">
-
-                <div class="announcement-header">
-
-                    <strong>
-                        {{ latest_announcement.author.get_full_name|default:latest_announcement.author.username }}
-                    </strong>
-
-                    <span>
-                        {{ latest_announcement.created_at|date:"M d, Y • h:i A" }}
-                    </span>
+                    📢 Latest Announcement
 
                 </div>
-                <hr>
-                <div class="announcement-body">{{ latest_announcement.message|linebreaksbr }}</div>
 
-            </div>
+                {% if latest_announcement %}
 
-            {% else %}
+                    <div class="announcement-card">
 
-            <p>No announcements.</p>
+                        <strong>
 
-            {% endif %}
+                            {{ latest_announcement.author.get_full_name|default:latest_announcement.author.username }}
 
-        </div>
+                        </strong>
 
-        <div class="quiz-section dashboard">
+                        <small>
 
-            <h3>Pending Assignments</h3>
+                            {{ latest_announcement.created_at|date:"M d, Y • h:i A" }}
 
-            <table class="classroom-table">
+                        </small>
 
-                <thead>
+                        <hr>
 
-                    <tr>
+                        <p>
 
-                        <th>Assignment</th>
-                        <th>Due</th>
+                            {{ latest_announcement.message|linebreaksbr }}
 
-                    </tr>
+                        </p>
 
-                </thead>
-
-                <tbody>
-
-                {% for assignment in pending_assignments %}
-
-                    <tr>
-
-                        <td>{{ assignment.classwork.title }}</td>
-
-                        <td>
-
-                            {% if assignment.classwork.due_date %}
-
-                                {{ assignment.classwork.due_date|date:"M d" }}
-
-                            {% else %}
-
-                                —
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                {% empty %}
-
-                    <tr>
-
-                        <td colspan="2">
-
-                            🎉 You're all caught up!
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <div class="quiz-section dashboard">
-
-            <h3>Recent Quiz Attempts</h3>
-
-            <table class="classroom-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Quiz</th>
-                        <th>Score</th>
-                        <th>Date</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                {% for row in recent_attempt_rows %}
-
-                    <tr>
-
-                        <td>{{ row.attempt.quiz.classwork.title }}</td>
-
-                        <td>{{ row.percentage|floatformat:1 }}%</td>
-
-                        <td>{{ row.attempt.submitted_at|date:"M d" }}</td>
-
-                    </tr>
-
-                {% empty %}
-
-                    <tr>
-
-                        <td colspan="3">
-
-                            No quiz attempts yet.
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <div class="quiz-section dashboard">
-
-            <h3>Performance Summary</h3>
-
-            <div class="performance-summary">
-
-                {% if quiz_average >= 90 %}
-
-                    <p>🌟 Excellent work! Keep it up.</p>
-
-                {% elif quiz_average >= 75 %}
-
-                    <p>👍 You're doing well. Stay consistent.</p>
+                    </div>
 
                 {% else %}
 
-                    <p>📚 Spend more time reviewing recent lessons.</p>
+                    <div class="dashboard-empty">
+
+                        No announcements.
+
+                    </div>
 
                 {% endif %}
 
-                <hr>
+            </div>
+            <!-- ===========================
+                Upcoming Tasks
+            ============================ -->
 
-                <p><strong>Quiz Average:</strong> {{ quiz_average|floatformat:1 }}%</p>
+            <div class="dashboard-panel">
 
-                <p><strong>Completed Quizzes:</strong> {{ completed_quizzes }}</p>
+                <div class="dashboard-panel-title">
 
-                <p><strong>Submitted Assignments:</strong> {{ completed_assignments }}</p>
+                    📌 Task Center
+
+                </div>
+
+                <div class="task-list">
+
+                    {% for task in task_list %}
+
+                    <a href="{{ task.url }}" class="task-card">
+
+                        <div class="task-icon">
+
+                            {% if task.type == "assignment" %}
+                                📁
+                            {% else %}
+                                📝
+                            {% endif %}
+
+                        </div>
+
+                        <div class="task-info">
+
+                            <h4>{{ task.title }}</h4>
+
+                            <small>
+
+                                {% if task.due %}
+                                    {{ task.due|date:"M d • h:i A" }}
+                                {% else %}
+                                    No due date
+                                {% endif %}
+
+                            </small>
+
+                        </div>
+
+                        <span class="task-status {{ task.status }}">
+
+                            {{ task.label }}
+
+                        </span>
+
+                    </a>
+
+                    {% empty %}
+
+                    <div class="dashboard-empty">
+
+                        🎉 No pending work.
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <!-- ===========================
+                Recent Quiz Attempts
+            ============================ -->
+
+            <div class="dashboard-panel">
+
+                <div class="dashboard-panel-title">
+
+                    📝 Recent Quiz Attempts
+
+                </div>
+
+                <div class="task-list">
+
+                    {% for row in recent_attempt_rows %}
+
+                        <div class="task-card">
+
+                            <div class="task-icon">
+
+                                {% if row.percentage >= 90 %}
+
+                                    🟢
+
+                                {% elif row.percentage >= 75 %}
+
+                                    🔵
+
+                                {% elif row.percentage >= 60 %}
+
+                                    🟡
+
+                                {% else %}
+
+                                    🔴
+
+                                {% endif %}
+
+                            </div>
+
+                            <div class="task-info">
+
+                                <h4>
+
+                                    {{ row.attempt.quiz.classwork.title }}
+
+                                </h4>
+
+                                <small>
+
+                                    {{ row.percentage|floatformat:1 }}%
+
+                                    •
+
+                                    {{ row.attempt.submitted_at|timesince }} ago
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="dashboard-empty">
+
+                            No quizzes completed yet.
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===========================
+            RIGHT COLUMN
+        ============================ -->
+        <div class="dashboard-right">
+
+             <div class="dashboard-panel alec-performance-panel">
+                <div class="dashboard-panel-title">
+                    📌 Status Report
+                </div>
+                {% if performance %}
+                <div class="progress-status">
+                    <div class="performance-stat">
+                        <span class="stat-label">Overall Average</span>
+                        <strong>
+                            {{ performance.overall_average|floatformat:1 }}%
+                        </strong>
+                    </div>
+                    <div class="performance-bar">
+
+                        <div
+                            class="performance-fill"
+                            style="width: {{ performance.overall_average }}%;">
+                        </div>
+
+                    </div>
+
+                    <div class="performance-status">
+
+                        {% if level == "Excellent" %}
+                            🟢 Excellent
+                        {% elif level == "Good" %}
+                            🔵 Good
+                        {% elif level == "Fair" %}
+                            🟡 Fair
+                        {% else %}
+                            🔴 Needs Attention
+                        {% endif %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="dashboard-empty">
+                        No performance data available yet.
+                    </div>
+
+                {% endif %}
+                </div>
+
+            </div>
+            <div class="dashboard-panel">
+
+                <div class="dashboard-panel-title">
+                    📈 Learning Progress
+                </div>
+                <div class="progress-status">
+                {% if progress %}
+                    
+                        {% if progress.trend == "improving" %}
+                            📈 Improving
+                        {% elif progress.trend == "declining" %}
+                            📉 Declining
+                        {% elif progress.trend == "stable" %}
+                            ➡️ Stable
+                        {% else %}
+                            🆕 Getting Started
+                        {% endif %}
+
+                    
+                    <p>
+                        {{ progress.message }}
+                    </p>
+
+                    {% if progress.change %}
+                        <h4>
+                            Change Rate:
+                            {{ progress.change|floatformat:1 }}%
+                        </h4>
+                    {% endif %}
+                    
+                {% else %}
+                    <p>
+                        Not enough data to determine a learning trend.
+                    </p>
+                {% endif %}
+                </div>
+            </div>
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-title">
+                    ⚠️ Learning Risk
+                </div>
+                <div class="progress-status">
+                    {% if risk == "Low" %}
+                        <div class="risk-display risk-low">
+                            🟢 LOW
+                        </div>
+                        <p>
+                            Your current learning progress is on track.
+                        </p>
+                    {% elif risk == "Medium" %}
+                        <div class="risk-display risk-medium">
+                            🟡 MEDIUM
+                        </div>
+                        <p>
+                            Some areas of your learning may need attention.
+                        </p>
+                    {% elif risk == "High" %}
+                        <div class="risk-display risk-high">
+                            🔴 HIGH
+                        </div>
+                        <p>
+                            A.L.E.C. recommends reviewing your current workload
+                            and completing unfinished activities.
+                        </p>
+                        
+                    {% else %}
+                        <div class="dashboard-empty">
+                            Risk cannot be determined yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="dashboard-panel">
+
+                <div class="dashboard-panel-title">
+
+                    🤖 Study Tip
+
+                </div>
+
+                <div class="dashboard-ai-placeholder">
+
+                    <h3>
+
+                        AI Study Assistant
+
+                    </h3>
+                    {% for study_tip in study_tips%}
+                    <p>
+                        - {{ study_tip }}
+                    </p>
+                    {% endfor %}
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
 </div>
 
 {% endblock %}

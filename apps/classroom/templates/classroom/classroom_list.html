@@ -71,13 +71,13 @@
             <div class="classroom-footer">
                 {% if request.user == classroom.teacher %}
 
-                <a href="{% url 'classroom:classroom_dashboard' classroom.id %}">
+                <a href="{% url 'classroom:classroom_dashboard' classroom.id %}" class="classroom-dashboard-btn">
                     Open
                 </a>
 
                 {% else %}
 
-                <a href="{% url 'classroom:student_dashboard' classroom.id %}">
+                <a href="{% url 'classroom:student_dashboard' classroom.id %}" class="classroom-dashboard-btn">
                     Open
                 </a>
 

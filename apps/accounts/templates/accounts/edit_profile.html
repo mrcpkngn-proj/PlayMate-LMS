@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Profile | PlayMate LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-header">
+    <h1>✏️ Edit Profile</h1>
+    <p>Update your account information.</p>
+</div>
+
+<div class="profile-form-container">
+
+    <div class="classroom-form-card profile">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+
+            <label for="{{ form.username.id_for_label }}">
+                Username
+            </label>
+
+            {{ form.username }}
+
+            {% if form.username.errors %}
+                <small class="field-error">
+                    {{ form.username.errors }}
+                </small>
+            {% endif %}
+
+
+            <label for="{{ form.first_name.id_for_label }}">
+                First Name
+            </label>
+
+            {{ form.first_name }}
+
+            {% if form.first_name.errors %}
+                <small class="field-error">
+                    {{ form.first_name.errors }}
+                </small>
+            {% endif %}
+
+
+            <label for="{{ form.last_name.id_for_label }}">
+                Last Name
+            </label>
+
+            {{ form.last_name }}
+
+            {% if form.last_name.errors %}
+                <small class="field-error">
+                    {{ form.last_name.errors }}
+                </small>
+            {% endif %}
+
+
+            <label for="{{ form.email.id_for_label }}">
+                Email
+            </label>
+
+            {{ form.email }}
+
+            {% if form.email.errors %}
+                <small class="field-error">
+                    {{ form.email.errors }}
+                </small>
+            {% endif %}
+
+
+            <div class="profile-actions">
+
+                <a
+                    href="{% url 'accounts:profile' %}"
+                    class="classroom-dashboard-btn">
+
+                    ← Cancel
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="classroom-dashboard-btn">
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -9,105 +9,564 @@ Analytics
 <div class="classroom-stream">
 
     <h2>Learning Analytics</h2>
+        <div class="analytics-top-cards">
 
-    {% if is_teacher %}
+            <div class="analytics-top-card">
 
-        <div class="quiz-section">
+                <h3>{{ student_count }}</h3>
 
-            <h3>Quiz Performance</h3>
+                <p>Students</p>
 
-            <table class="classroom-table">
+            </div>
 
-                <thead>
+            <div class="analytics-top-card">
 
-                    <tr>
+                <h3>{{ assignment_count }}</h3>
 
-                        <th>Quiz</th>
+                <p>Assignments</p>
 
-                        <th>Average</th>
+            </div>
 
-                        <th>Attempts</th>
+            <div class="analytics-top-card">
 
-                    </tr>
+                <h3>{{ quiz_count }}</h3>
 
-                </thead>
+                <p>Quizzes</p>
 
-                <tbody>
+            </div>
 
-                {% for row in quiz_rows %}
+            <div class="analytics-top-card">
 
-                    <tr>
+                <h3>{{ attention_students|length }}</h3>
 
-                        <td>{{ row.quiz.classwork.title }}</td>
+                <p>Students At Risk</p>
 
-                        <td>{{ row.average|floatformat:1 }}%</td>
-
-                        <td>{{ row.attempts }}</td>
-
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
+            </div>
 
         </div>
+        <div class="quiz-section dashboard">
 
-    {% else %}
+            <h2 style="margin:0px;">Student Alert AI</h2>
+            <p style="margin-bottom:20px; color:#ccc;">
+
+                ⚠ Students are flagged when they have
+                an average quiz score below
+                <strong>75%</strong>
+                or have 2 or more
+                missing assignments.
+
+            </p>
+            <div class="analytics-alert-summary">
+
+                {{ analytics_message }}
+
+            </div>
+
+                <table class="classroom-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Student</th>
+                            <th>Quiz Average</th>
+                            <th>Missing</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    {% if attention_students %}
+                        {% for row in attention_students %}
+                            <tr>
+                                <td>
+                                    {{ row.student.get_full_name|default:row.student.username }}
+                                </td>
+
+                                <td>
+                                    {{ row.quiz_average|floatformat:1 }}%
+                                </td>
+
+                                <td>
+                                    {{ row.missing }}
+                                </td>
+
+                                <td>
+                                    {{ row.reason }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                            <tr>
+                                <td colspan="4">
+                                    🎉 No students currently need extra help. You're doing good teacher!
+                                </td>
+                            </tr>
+                    {% endif %}
+                    </tbody>
+
+                </table>
+        </div>
 
         <div class="quiz-section dashboard">
 
-            <h3>Your Quiz Performance</h3>
+            <h2 style="margin:0px; margin-bottom:40px;">Overall Classroom Performance</h2>
 
-            <table class="classroom-table">
+            <div class="analytics-summary">
 
-                <thead>
+                <div class="analytics-chart">
 
-                    <tr>
+                    <canvas id="overallChart"></canvas>
 
-                        <th>Quiz</th>
+                </div>
 
-                        <th>Score</th>
+                <div class="analytics-legend">
 
-                    </tr>
+                    <div class="legend-item excellent">
+                        🟢 90-100  |  Excellent
+                        <span>{{ excellent }}</span>
+                    </div>
 
-                </thead>
+                    <div class="legend-item good">
+                        🔵 85-89  |  Good
+                        <span>{{ good }}</span>
+                    </div>
 
-                <tbody>
+                    <div class="legend-item fair">
+                        🟡 75-84  |  Fair
+                        <span>{{ fair }}</span>
+                    </div>
 
-                {% for row in percentages %}
+                    <div class="legend-item attention">
+                        🔴 75 ~ below  |  At Risk
+                        <span>{{ attention }}</span>
+                    </div>
 
-                    <tr>
+                </div>
 
-                        <td>{{ row.quiz.classwork.title }}</td>
+        </div>
+            <div>
+                <div class="analytics-overview">
+                    <div class="overview-card">
+                        <strong>
 
-                        <td>{{ row.percentage|floatformat:1 }}%</td>
+                            {{ overall_average|floatformat:1 }}%
 
-                    </tr>
+                        </strong>
+                        <h4>Overall Average</h4>
+                    </div>
 
-                {% empty %}
+                    <div class="overview-card">
+                        <strong>
 
-                    <tr>
+                            {{ highest_average|floatformat:1 }}%
 
-                        <td colspan="2">
+                        </strong>
+                        <h4>Highest Average</h4>
+                    </div>
 
-                            No completed quizzes.
+                    <div class="overview-card">
+                        <strong>
 
-                        </td>
+                            {{ lowest_average|floatformat:1 }}%
 
-                    </tr>
+                        </strong>
+                        <h4>Lowest Average</h4>
+                    </div>
 
-                {% endfor %}
+                    <div class="overview-card">
+                        <strong>
 
-                </tbody>
+                            {{ students_at_risk }}
 
-            </table>
+                        </strong>
+                        <h4>Students at Risk</h4>
+                    </div>
+                </div>
+                {% if top_student %}
+                    <div class="analytics-highlight">
+                        <div style='text-align: center; flex-direction-column;'>
+                            🏆 Top Performer
+                            <br>
+                            <strong>{{ top_student.student.get_full_name|default:top_student.student.username }}</strong>
+                            <br>
+                            ({{ top_student.overall_average|floatformat:1 }}%)
+                        </div>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="quiz-section dashboard">
+
+            <h2>Quiz Analytics</h2>
+            <div class="chart-container" style="width:100%; height:400px;">
+                <canvas id="quizChart"></canvas>
+            </div>
 
         </div>
 
-    {% endif %}
+        <div class="quiz-section dashboard">
+
+            <h2>Assignment Completions</h2>
+
+            <div
+                class="chart-container"
+                style="height:350px;">
+
+                <canvas id="assignmentChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <div class="quiz-section dashboard">
+
+            <h2>Engagement Metrics</h2>
+
+            <div class="analytics-metrics">
+
+                <div class="metric-card">
+                    <br>
+
+                    <h3>{{ total_submissions }}</h3>
+
+                    <p>Assignment Submissions</p>
+
+                </div>
+
+                <div class="metric-card">
+                    <br>
+
+                    <h3>{{ total_attempts }}</h3>
+
+                    <p>Quiz Attempts</p>
+
+                </div>
+
+                <div class="metric-card">
+                    <br>
+
+                    <h3>{{ missing_assignments }}</h3>
+
+                    <p>Missing Assignments</p>
+
+                </div>
+
+                <div class="metric-card">
+                    <br>
+
+                    <h3>{{ average_attempts|floatformat:1 }}</h3>
+
+                    <p>Average Attempts / Quiz</p>
+
+                </div>
+
+            </div>
+
+        </div>
 
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // -------------------------
+    // Overall Performance Chart
+    // -------------------------
+
+    const overallCanvas =
+        document.getElementById("overallChart");
+
+    if (overallCanvas) {
+
+        new Chart(overallCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+
+                    "Excellent",
+                    "Good",
+                    "Fair",
+                    "Needs Attention"
+
+                ],
+
+                datasets: [{
+
+                    data: [
+
+                        {{ excellent }},
+                        {{ good }},
+                        {{ fair }},
+                        {{ attention }}
+
+                    ],
+
+                    backgroundColor: [
+
+                        "#3ccf4e",
+                        "#3b82f6",
+                        "#facc15",
+                        "#ef4444"
+
+                    ],
+
+                    borderWidth:2
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                maintainAspectRatio:false,
+
+                plugins:{
+                    legend:{
+                        display:false,
+                    }
+                },
+
+            }
+
+        });
+
+    }
+
+    // -------------------------
+    // Quiz Bar Chart
+    // -------------------------
+
+    const quizCanvas =
+        document.getElementById("quizChart");
+
+    if (quizCanvas) {
+
+        const quizLabels = [
+
+            {% for quiz in quiz_chart %}
+                "{{ quiz.title|escapejs }}",
+            {% endfor %}
+
+        ];
+
+        const quizData = [
+
+            {% for quiz in quiz_chart %}
+                {{ quiz.average|floatformat:2 }},
+            {% endfor %}
+
+        ];
+
+        const targetLine = {
+
+            id: "targetLine",
+
+            afterDraw(chart){
+
+                const {
+                    ctx,
+                    chartArea,
+                    scales
+                } = chart;
+
+                const y = scales.y.getPixelForValue(75);
+
+                ctx.save();
+
+                ctx.strokeStyle = "#ef4444";
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6,6]);
+
+                ctx.beginPath();
+                ctx.moveTo(chartArea.left, y);
+                ctx.lineTo(chartArea.right, y);
+                ctx.stroke();
+
+                ctx.fillStyle = "#ef4444";
+                ctx.font = "12px sans-serif";
+                {% comment %} ctx.fillText("Passing (75%)", chartArea.left + 5, y - 8); {% endcomment %}
+
+                ctx.restore();
+
+            }
+
+        };
+
+        new Chart(quizCanvas, {
+
+            plugins:[targetLine],
+
+            type: "bar",
+
+            data: {
+
+                labels: quizLabels,
+
+                datasets: [{
+
+                    label: "Highest Attempt Score Averages",
+
+                    data: quizData,
+
+                    backgroundColor: quizData.map(value => {
+
+                        if(value >= 90) return "#22c55e";
+
+                        if(value >= 75) return "#3b82f6";
+
+                        if(value >= 60) return "#facc15";
+
+                        return "#ef4444";
+
+                    })
+
+                }],
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100,
+
+                        
+
+                        ticks: {
+
+                            color: "#ffffff",
+
+                        },
+
+                        grid: {
+
+                            color: "#555",
+
+                        },
+
+                    },
+
+                    x: {
+
+                        ticks: {
+
+                            color: "#ffffff",
+
+                        },
+
+                        grid: {
+
+                            color: "#555",
+
+                        },
+
+                    },
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        labels: {
+
+                            color: "#ffffff",
+
+                        },
+
+                    },
+
+                },
+
+            },
+
+        });
+
+    }
+
+    const assignmentCanvas =
+        document.getElementById("assignmentChart");
+
+    if (assignmentCanvas){
+
+        new Chart(assignmentCanvas,{
+
+            type:"bar",
+
+            data:{
+
+                labels:[
+
+                    {% for row in assignment_chart %}
+                        "{{ row.title|escapejs }}",
+                    {% endfor %}
+
+                ],
+
+                datasets:[{
+
+                    label:"Submission Rate (%)",
+
+                    data:[
+
+                        {% for row in assignment_chart %}
+                            {{ row.rate|floatformat:2 }},
+                        {% endfor %}
+
+                    ],
+
+                    backgroundColor:"#60a5fa"
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                maintainAspectRatio:false,
+
+                scales:{
+
+                    y:{
+
+                        beginAtZero:true,
+
+                        max:100
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
 
 {% endblock %}

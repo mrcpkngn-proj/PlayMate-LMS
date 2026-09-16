@@ -7,14 +7,45 @@
 🟩 Grading
 🟩 Gradebook
 🟩 Teacher Dashboard
-🟨 Student Dashboard
-🟨 Stream UI
-⬜ Notifications
-⬜ Analytics Charts
-⬜ AI Recommendations
+🟩 Student Dashboard
+🟩 Stream UI
+🟩 Notifications
+🟩 Analytics Charts
+⬜ AI Recommendations/Module
 ⬜ Final UI Polish
 ⬜ Testing
+⬜ Defense Preparation
 ⬜ Deployment
+
+What I would build next (Phase 2)
+    -Redesign sidebar.html into the permanent A.L.E.C. panel.
+    -Add a context processor so A.L.E.C. data is available on every page automatically (instead of passing it from every view).
+    -Style the sidebar as a futuristic astronaut command panel.
+    -Create the "Open Assistant" page.
+    -Begin the chat interface.
+
+⬜ Create a Django context processor so A.L.E.C. is available globally.
+⬜ Make the sidebar automatically switch between Standby Mode and Online Mode based on the current classroom.
+⬜ Move all sidebar logic out of your views (clean architecture).
+⬜ Add the connecting/loading animation when entering a classroom.
+⬜ Build the dedicated A.L.E.C. chat page.
+
+By the end of Phase 1 we'll have:
+✅ Performance calculations
+✅ Progress analysis
+✅ Risk analysis
+✅ Study recommendations
+✅ Overall summary
+✅ Single report generator
+⬜ Personalized lesson recommendations
+⬜ Teacher intervention recommendations
+⬜ Structured learning insights (your thesis contribution)
+⬜ Export grades (CSV/Excel)
+⬜ UI polish (icons, spacing, responsiveness)
+⬜ Bug fixing and testing
+⬜ Thesis documentation
+⬜ Defense preparation
+
 
 <<<--- Dashboard --->>>
 Teacher Side
@@ -23,13 +54,21 @@ Teacher Side
 ⏳ Export Grades (CSV)
 ⏳ Search/Filter students
 Student Side
-⏳ Dashboard
-⏳ Analytics
+✅ Dashboard
 ⏳ Personal progress
-⏳ Weak/Strong topics
 Shared
-⏳ Finish Stream
+✅ Finish Stream
 ⏳ Notifications
 ⏳ Sidebar AI Assistant
 ⏳ Structured Learning Analytics recommendations
 ⏳ Final UI polish
+
+
+Batch 1 — AI Warning System (Backend only)
+Batch 2 — Analytics Dashboard Cards
+Batch 3 — AI Recommendation Panel
+Batch 4 — Charts
+Batch 5 — Student Ranking Table
+Batch 6 — Quiz Locking
+Batch 7 — Force Edit
+Batch 8 — Activity Timeline

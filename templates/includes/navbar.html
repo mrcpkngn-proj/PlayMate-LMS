@@ -7,23 +7,158 @@
           <a href="{% url 'classroom:classroom_list' %}">
               🏫 Classrooms
           </a>
-          <a href="#">
-              📝 To-do
+          <a href="{% url 'accounts:profile' %}">
+              📝 Profile
           </a>
-          <a href="#">
-              📊 Grades
+          <a href="{% url 'accounts:settings' %}">
+              ⚙ Settings
           </a>
       </div>
     </div>
     <div>
       <a href="{% url 'classroom:classroom_list' %}" class="brand">
-        <img src="{% static 'images/navlogo.png' %}" alt="PlayMate LMS Logo" class="logo" style ="height: 50px; width: auto; margin-top: 10px;">
+        <img src="{% static 'images/navlogo.png' %}" alt="PlayMate LMS Logo" class="logo">
       </a>
     </div>
+    <div class="notification-wrapper">
+
+      <button
+          id="notification-button"
+          class="notification-button">
+
+          🔔
+
+          {% if notification_count > 0 %}
+              <span class="notification-count">
+                  {{ notification_count }}
+              </span>
+          {% endif %}
+
+      </button>
+
+        <div
+            id="notification-dropdown"
+            class="notification-dropdown hidden">
+
+            <h3 class="notification-header">
+                Notifications
+            </h3>
+
+            <div class="notification-list">
+
+                {% if latest_notifications %}
+
+                    {% for notification in latest_notifications %}
+
+                        <a
+                            href="{% url 'notifications:notification_redirect' notification.id %}"
+                            class="notification-item">
+
+                            <strong>
+                                {{ notification.title }}
+                            </strong>
+
+                            {% if notification.classroom %}
+                                <div class="notification-classroom">
+                                    {{ notification.classroom.name }}
+                                </div>
+                            {% endif %}
+
+                            <div class="notification-message">
+                                {{ notification.message }}
+                            </div>
+
+                            <div class="notification-time">
+                                {{ notification.created_at|timesince }} ago
+                            </div>
+
+                        </a>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="notification-empty">
+                        No notifications.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            <a
+                href="{% url 'notifications:notification_list' %}"
+                class="notification-view-all">
+                View All →
+            </a>
+
+        </div>
+    </div>
+    <button
+        id="alec-toggle"
+        class="alec-toggle"
+        type="button"
+        aria-controls="alec-sidebar"
+        aria-expanded="false"
+    >
+        A.L.E.C.
+    </button>
+
+    <span
+        class="welcome"
+        style="color:#fff;">
+
+        Welcome Space Cadet,
+        {{ user.username }}!
+
+    </span>
   </div>
 
   <div class="navbar-right">
-    <span class="welcome" style="color: #fff;">Welcome Space Cadet, {{ user.username }}!</span>
-    <a href="{% url 'accounts:logout' %}" class="logout">Logout</a>
+
+      <a
+          href="{% url 'accounts:logout' %}"
+          class="logout">
+
+          Logout
+
+      </a>
+
   </div>
 </nav>
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const button =
+        document.getElementById(
+            "notification-button"
+        );
+
+    const dropdown =
+        document.getElementById(
+            "notification-dropdown"
+        );
+
+    if (!button || !dropdown)
+        return;
+
+    button.addEventListener("click", function (e) {
+
+        e.stopPropagation();
+
+        dropdown.classList.toggle("hidden");
+
+    });
+
+    document.addEventListener("click", function () {
+
+        dropdown.classList.add("hidden");
+
+    });
+
+});
+
+</script>
+{% endblock %}

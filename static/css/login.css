@@ -60,7 +60,6 @@ a, button, label{
             #dee8fa 80%,
             #102257 100%
         );
-    overflow:hidden;
     display:flex;
     flex-direction:column;
     box-shadow:0 10px 30px rgba(0,0,0,.4);
@@ -122,6 +121,7 @@ a, button, label{
     display:flex;
     align-items:center;
     gap:20px;
+    margin-right: 10px;
 }
 
 .nav-right a{
@@ -266,7 +266,7 @@ a, button, label{
 }
 
 .img-logo:hover{
-    animation: shake 10s;
+    animation: shake 6s;
     animation-iteration-count: infinite;
 }
 
@@ -334,3 +334,188 @@ a, button, label{
    RESPONSIVE
 ========================== */
 
+/* ==========================
+   ABOUT PAGE
+========================== */
+
+.about-card {
+    width: 650px;
+    max-width: 85%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 35px 40px;
+    background-color: #ffffffc0;
+}
+
+/* About title */
+
+.about-card h2 {
+    font-family: "Press Start 2P", cursive;
+    font-size: 20px;
+    color: #123b78;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* Section headings */
+
+.about-card h3 {
+    font-family: "VT323", monospace;
+    font-size: 27px;
+    color: #126dcc;
+    margin-top: 28px;
+    margin-bottom: 8px;
+}
+
+/* Paragraphs */
+
+.about-card p {
+    font-family: "VT323", monospace;
+    font-size: 21px;
+    line-height: 1.35;
+    color: #26364d;
+    margin-bottom: 14px;
+}
+
+/* Highlighted text */
+
+.about-card strong {
+    color: #124b91;
+}
+
+/* About button */
+
+.about-card .login-buttons {
+    margin-top: 30px;
+}
+
+.about-card .btn-blue {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ==========================
+   ABOUT CARD SCROLLBAR
+========================== */
+
+.about-card::-webkit-scrollbar {
+    width: 8px;
+}
+
+.about-card::-webkit-scrollbar-track {
+    background: #e8eef8;
+    border-radius: 10px;
+}
+
+.about-card::-webkit-scrollbar-thumb {
+    background: #5b9bd5;
+    border-radius: 10px;
+}
+
+.about-card::-webkit-scrollbar-thumb:hover {
+    background: #287ac1;
+}
+
+
+/* =========================================
+PASSWORD RECOVERY
+========================================= */
+
+.password-recovery {
+text-align: center;
+}
+
+.password-recovery h2 {
+margin-bottom: 25px;
+font-family: 'Press Start 2P', cursive;
+font-size: 18px;
+color: #facc15;
+line-height: 1.5;
+}
+
+.password-recovery p {
+margin-bottom: 18px;
+line-height: 1.4;
+}
+
+.recovery-note {
+margin: 25px 0;
+padding: 15px;
+border: 1px solid rgba(114, 164, 240, 0.35);
+border-radius: 8px;
+background: rgba(114, 164, 240, 0.08);
+}
+
+.recovery-note p {
+margin: 8px 0 0;
+}
+
+
+
+/* ==========================
+   ABOUT PAGE RESPONSIVE
+========================== */
+
+@media (max-width: 900px) {
+
+    .login-content {
+        grid-template-columns: 1fr;
+    }
+
+    .login-right {
+        display: none;
+    }
+
+    .about-card {
+        width: 700px;
+        max-width: 90%;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .login-navbar {
+        padding: 0 12px;
+    }
+
+    .nav-logo {
+        height: 40px;
+    }
+
+    .nav-buttons {
+        gap: 6px;
+    }
+
+    .nav-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .nav-right a {
+        font-size: 15px;
+    }
+
+    .about-card {
+        width: 92%;
+        max-width: 92%;
+        padding: 25px;
+        max-height: 82vh;
+    }
+
+    .about-card h2 {
+        font-size: 15px;
+    }
+
+    .about-card h3 {
+        font-size: 24px;
+    }
+
+    .about-card p {
+        font-size: 19px;
+    }
+
+}

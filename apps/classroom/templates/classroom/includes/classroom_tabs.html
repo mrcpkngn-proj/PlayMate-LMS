@@ -1,14 +1,16 @@
-<div class="classroom-tabs">
+<div class="classroom-tabs" style='flex-wrap: wrap;'>
 
     {% if request.user == classroom.teacher %}
 
-    <a href="{% url 'classroom:classroom_dashboard' classroom.id %}">
+    <a href="{% url 'classroom:classroom_dashboard' classroom.id %}"
+        class="{% if request.resolver_match.url_name == 'classroom_dashboard' %}active{% endif %}">
         Dashboard
     </a>
 
     {% else %}
 
-    <a href="{% url 'classroom:student_dashboard' classroom.id %}">
+    <a href="{% url 'classroom:student_dashboard' classroom.id %}"
+        class="{% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">
         Dashboard
     </a>
 
@@ -28,13 +30,15 @@
        class="{% if request.resolver_match.url_name == 'classroom_people' %}active{% endif %}">
         Members
     </a>
-
-    <a href="{% url 'classroom:classroom_grades' classroom.pk %}"
+    {% if request.user == classroom.teacher %}
+    <a href="{% url 'classroom:classroom_grades' classroom.id %}"
        class="{% if request.resolver_match.url_name == 'classroom_grades' %}active{% endif %}">
         Grades
     </a>
-        <a href="{% url 'classroom:classroom_analytics' classroom.id %}">
+    
+    <a href="{% url 'classroom:classroom_analytics' classroom.id %}"
+       class="{% if request.resolver_match.url_name == 'classroom_analytics' %}active{% endif %}">
         Analytics
     </a>
-
+    {% endif %}
 </div>

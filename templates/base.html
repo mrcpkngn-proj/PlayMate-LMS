@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Quiz App{% endblock %}</title>
+    <title>{% block title %}PlayMate-LMS{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 
-{% block extra_js %}{% endblock %}
+
 
 <body>
     <!-- Top Navbar -->
@@ -28,5 +28,139 @@
         {% block content %}
         {% endblock %}
     </main>
+
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const alecToggle =
+            document.getElementById("alec-toggle");
+
+        const alecSidebar =
+            document.getElementById("alec-sidebar");
+
+
+        if (!alecToggle || !alecSidebar) {
+            return;
+        }
+
+
+        alecToggle.addEventListener("click", function () {
+
+            const isOpen =
+                alecSidebar.classList.toggle("alec-mobile-open");
+
+
+            alecToggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
+
+            alecToggle.classList.toggle(
+                "active",
+                isOpen
+            );
+
+
+            alecToggle.innerHTML =
+                isOpen
+                    ? "✕ CLOSE"
+                    : "🚀 A.L.E.C.";
+
+        });
+
+
+        /*
+            * Close ALEC when clicking outside it
+            * on small screens.
+            */
+
+        document.addEventListener("click", function (event) {
+
+            if (
+                window.innerWidth > 900
+            ) {
+                return;
+            }
+
+
+            const clickedInsideSidebar =
+                alecSidebar.contains(event.target);
+
+            const clickedToggle =
+                alecToggle.contains(event.target);
+
+
+            if (
+                !clickedInsideSidebar &&
+                !clickedToggle &&
+                alecSidebar.classList.contains(
+                    "alec-mobile-open"
+                )
+            ) {
+
+                alecSidebar.classList.remove(
+                    "alec-mobile-open"
+                );
+
+
+                alecToggle.classList.remove(
+                    "active"
+                );
+
+
+                alecToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+
+                alecToggle.innerHTML =
+                    "🚀 A.L.E.C.";
+
+            }
+
+        });
+
+
+        /*
+            * If the browser is resized back to desktop,
+            * reset the mobile state.
+            */
+
+        window.addEventListener("resize", function () {
+
+            if (window.innerWidth > 900) {
+
+                alecSidebar.classList.remove(
+                    "alec-mobile-open"
+                );
+
+
+                alecToggle.classList.remove(
+                    "active"
+                );
+
+
+                alecToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+
+                alecToggle.innerHTML =
+                    "🚀 A.L.E.C.";
+
+            }
+
+        });
+
+    });
+
+    </script>
+
+  {% block extra_js %}{% endblock %}  
 </body>
 </html>
+

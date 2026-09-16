@@ -1,0 +1,829 @@
+/* =========================================
+   QUIZ MAKER GUIDE
+========================================= */
+
+/* Guide button */
+
+.quiz-guide-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 10px 16px;
+
+    border: 2px solid #72a4f0;
+
+    border-radius: 7px;
+
+    background: linear-gradient(
+        180deg,
+        #70a6ed 0%,
+        #22529a 100%
+    );
+
+    color: #fff;
+
+    font-family: 'Press Start 2P', cursive;
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+
+}
+
+.quiz-guide-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.35);
+
+    background: linear-gradient(
+        180deg,
+        #80b5ff 0%,
+        #2862ad 100%
+    );
+
+}
+
+.quiz-guide-btn:active {
+
+    transform: translateY(0);
+
+    box-shadow:
+        0 3px 7px rgba(0, 0, 0, 0.25);
+
+}
+
+
+/* =========================================
+   HEADER LAYOUT
+========================================= */
+
+.quiz-dashboard-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+
+/* =========================================
+   MODAL OVERLAY
+========================================= */
+
+.quiz-guide-overlay {
+
+    position: fixed;
+
+    /*
+        Sidebar = 25vw
+        Content area = remaining 75vw
+    */
+    left: 25vw;
+
+    /*
+        Navbar height
+    */
+    top: 70px;
+
+    width: 75vw;
+
+    height: calc(100vh - 70px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    /*
+        Must sit above the sidebar/navbar.
+        Increase this if your navbar/sidebar uses
+        an extremely high z-index.
+    */
+    z-index: 9999;
+
+    box-sizing: border-box;
+
+    /*
+        IMPORTANT:
+        When closed, the overlay must NOT block
+        clicks on the page underneath.
+    */
+    pointer-events: none;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+
+}
+
+
+/* =========================================
+   ACTIVE OVERLAY
+========================================= */
+
+.quiz-guide-overlay.active {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    /*
+        Allow the overlay and modal to receive clicks
+        once the guide is open.
+    */
+    pointer-events: auto;
+
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+.quiz-guide-modal {
+
+    width: min(850px, 100%);
+
+    max-height: 88vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    position: relative;
+
+    z-index: 10000;
+
+    /*
+        Explicitly allow interaction with
+        everything inside the modal.
+    */
+    pointer-events: auto;
+
+    background: #0b1b3d;
+
+    border: 2px solid #72a4f0;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 0 35px rgba(0, 0, 0, 0.65),
+        0 0 20px rgba(114, 164, 240, 0.15);
+
+    transform: translateY(0px) scale(0.98);
+
+    transition: transform 0.25s ease;
+
+    overflow: hidden;
+
+}
+
+.quiz-guide-overlay.active .quiz-guide-modal {
+
+    transform: translateY(0) scale(1);
+
+}
+
+
+/* =========================================
+   MODAL HEADER
+========================================= */
+
+.quiz-guide-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px 22px;
+
+    background: linear-gradient(
+        180deg,
+        #70a6ed 0%,
+        #22529a 100%
+    );
+
+    border-bottom: 2px solid #72a4f0;
+
+}
+
+.quiz-guide-header h2 {
+
+    margin: 0;
+
+    color: #fff;
+
+    font-family: 'Press Start 2P', cursive;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+
+}
+
+.quiz-guide-header p {
+
+    margin: 8px 0 0;
+
+    color: #dceaff;
+
+    font-family: 'VT323', monospace;
+
+    font-size: 18px;
+
+}
+
+
+/* =========================================
+   CLOSE BUTTON
+========================================= */
+
+.quiz-guide-close {
+
+    flex-shrink: 0;
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 2px solid rgba(255, 255, 255, 0.5);
+
+    border-radius: 6px;
+
+    background: rgba(0, 0, 0, 0.2);
+
+    color: #fff;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    position: relative;
+
+    /*
+        Higher than modal content.
+    */
+    z-index: 10001;
+
+    pointer-events: auto;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+.quiz-guide-close:hover {
+
+    background: rgba(0, 0, 0, 0.4);
+
+    transform: scale(1.05);
+
+}
+
+
+/* =========================================
+   MODAL CONTENT
+========================================= */
+
+.quiz-guide-content {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 22px 25px;
+
+    font-family: 'VT323', monospace;
+
+    color: #eef5ff;
+
+}
+
+
+/* =========================================
+   CUSTOM SCROLLBAR
+========================================= */
+
+.quiz-guide-content::-webkit-scrollbar {
+
+    width: 9px;
+
+}
+
+.quiz-guide-content::-webkit-scrollbar-track {
+
+    background: #081630;
+
+}
+
+.quiz-guide-content::-webkit-scrollbar-thumb {
+
+    background: #315c98;
+
+    border-radius: 10px;
+
+}
+
+.quiz-guide-content::-webkit-scrollbar-thumb:hover {
+
+    background: #4c82c5;
+
+}
+
+
+/* =========================================
+   GUIDE SECTIONS
+========================================= */
+
+.quiz-guide-section {
+
+    display: flex;
+
+    gap: 16px;
+
+    padding: 18px 0;
+
+    border-bottom: 1px solid rgba(
+        114,
+        164,
+        240,
+        0.18
+    );
+
+}
+
+.quiz-guide-section:first-child {
+
+    padding-top: 0;
+
+}
+
+.quiz-guide-section:last-child {
+
+    border-bottom: none;
+
+}
+
+
+/* =========================================
+   NUMBER
+========================================= */
+
+.quiz-guide-number {
+
+    flex-shrink: 0;
+
+    width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: linear-gradient(
+        180deg,
+        #ffe15a 0%,
+        #ce7f00 100%
+    );
+
+    color: #011537;
+
+    font-family: 'Press Start 2P', cursive;
+
+    font-size: 11px;
+
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+
+/* =========================================
+   SECTION CONTENT
+========================================= */
+
+.quiz-guide-section-content {
+
+    flex: 1;
+
+}
+
+.quiz-guide-section-content h3 {
+
+    margin: 0 0 8px;
+
+    color: #facc15;
+
+    font-family: 'Press Start 2P', cursive;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+}
+
+.quiz-guide-section-content p {
+
+    margin: 0 0 10px;
+
+    color: #dce7fa;
+
+    font-family: 'VT323', monospace;
+
+    font-size: 19px;
+
+    line-height: 1.3;
+
+}
+
+
+/* =========================================
+   LISTS
+========================================= */
+
+.quiz-guide-section-content ul,
+.quiz-guide-section-content ol {
+
+    margin: 8px 0 0;
+
+    padding-left: 25px;
+
+    color: #dce7fa;
+
+    font-size: 18px;
+
+    line-height: 1.4;
+
+}
+
+.quiz-guide-section-content li {
+
+    margin-bottom: 6px;
+
+}
+
+.quiz-guide-section-content strong {
+
+    color: #fff;
+
+}
+
+
+/* =========================================
+   AI SECTION
+========================================= */
+
+.quiz-guide-ai {
+
+    background: rgba(
+        114,
+        164,
+        240,
+        0.055
+    );
+
+    margin: 0 -10px;
+
+    padding-left: 10px;
+
+    padding-right: 10px;
+
+    border-left: 3px solid #72a4f0;
+
+    border-radius: 5px;
+
+}
+
+
+/* =========================================
+   EXAMPLE TEXT
+========================================= */
+
+.quiz-guide-example {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: #9ec2f9;
+
+    font-size: 16px;
+
+}
+
+
+/* =========================================
+   GUIDE NOTE
+========================================= */
+
+.quiz-guide-note {
+
+    margin-top: 12px;
+
+    padding: 10px 13px;
+
+    background: rgba(
+        250,
+        204,
+        21,
+        0.08
+    );
+
+    border-left: 3px solid #facc15;
+
+    border-radius: 4px;
+
+    color: #e9edff;
+
+    font-size: 17px;
+
+    line-height: 1.3;
+
+}
+
+
+/* =========================================
+   ANSWER OPTIONS
+========================================= */
+
+.quiz-guide-option {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    margin-top: 9px;
+
+    padding: 11px 13px;
+
+    background: rgba(
+        41,
+        70,
+        109,
+        0.3
+    );
+
+    border: 1px solid #29466d;
+
+    border-radius: 5px;
+
+}
+
+.quiz-guide-option strong {
+
+    color: #facc15;
+
+    font-size: 17px;
+
+}
+
+.quiz-guide-option span {
+
+    color: #c6d8ff;
+
+    font-size: 17px;
+
+}
+
+
+/* =========================================
+   MODAL FOOTER
+========================================= */
+
+.quiz-guide-footer {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    padding: 12px 20px;
+
+    background: #081630;
+
+    border-top: 1px solid rgba(
+        114,
+        164,
+        240,
+        0.2
+    );
+
+}
+
+.quiz-guide-footer-btn {
+
+    padding: 10px 20px;
+
+    border: 2px solid #72a4f0;
+
+    border-radius: 6px;
+
+    background: linear-gradient(
+        180deg,
+        #70a6ed 0%,
+        #22529a 100%
+    );
+
+    color: #fff;
+
+    font-family: 'Press Start 2P', cursive;
+
+    font-size: 10px;
+
+    cursor: pointer;
+
+    /*
+        Make sure the button remains
+        above any overlapping layer.
+    */
+    position: relative;
+
+    z-index: 10001;
+
+    pointer-events: auto;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+.quiz-guide-footer-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.35);
+
+}
+
+
+/* =========================================
+   MOBILE / SMALL SCREENS
+========================================= */
+
+@media (max-width: 700px) {
+
+    .quiz-dashboard-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+    .quiz-guide-btn {
+
+        width: 100%;
+
+    }
+
+    .quiz-guide-overlay {
+
+        /*
+            On small screens there should no longer
+            be a 25vw sidebar offset.
+
+            The modal gets the entire available viewport.
+        */
+        left: 0;
+
+        top: 40px;
+
+        width: 100vw;
+
+        height: calc(100vh - 40px);
+
+        padding: 12px;
+
+        box-sizing: border-box;
+
+    }
+
+    .quiz-guide-modal {
+
+        width: 100%;
+
+        max-height: 90vh;
+
+        border-radius: 8px;
+
+    }
+
+    .quiz-guide-header {
+
+        padding: 15px;
+
+    }
+
+    .quiz-guide-header h2 {
+
+        font-size: 12px;
+
+    }
+
+    .quiz-guide-header p {
+
+        font-size: 16px;
+
+    }
+
+    .quiz-guide-content {
+
+        padding: 18px 15px;
+
+    }
+
+    .quiz-guide-section {
+
+        gap: 11px;
+
+    }
+
+    .quiz-guide-number {
+
+        width: 28px;
+
+        height: 28px;
+
+        font-size: 9px;
+
+    }
+
+    .quiz-guide-section-content h3 {
+
+        font-size: 10px;
+
+    }
+
+    .quiz-guide-section-content p {
+
+        font-size: 17px;
+
+    }
+
+    .quiz-guide-section-content ul,
+    .quiz-guide-section-content ol {
+
+        font-size: 16px;
+
+    }
+
+    .quiz-guide-note {
+
+        font-size: 15px;
+
+    }
+
+    .quiz-guide-option strong,
+    .quiz-guide-option span {
+
+        font-size: 15px;
+
+    }
+
+}
+

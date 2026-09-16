@@ -14,239 +14,488 @@
 
 <div class="assignment-page">
 
-    <!-- =========================
-         HEADER
-    ========================== -->
-
     <div class="classroom-header">
 
         <div>
 
             <h1>📁 {{ assignment.classwork.title }}</h1>
 
-            <p class="assignment-due">
-
-                Due: {{ assignment.classwork.due_date }}
-
-            </p>
-
-            <p>
-                Total Points: {{ assignment.points }}
+            <p class="assignment-meta">
+                Due:
+                {{ assignment.classwork.due_date }}
             </p>
 
         </div>
 
-        <div>
+        {% if request.user == classroom.teacher %}
 
-            {% if request.user == classroom.teacher %}
+            <span class="assignment-status teacher">
+                Teacher View
+            </span>
 
-                <span class="assignment-status teacher">
-                    Teacher View
-                </span>
+        {% elif submission %}
 
-            {% elif submission %}
+            <span class="assignment-status submitted">
+                Submitted
+            </span>
 
-                <span class="assignment-status submitted">
-                    Submitted
-                </span>
+        {% else %}
 
-            {% else %}
+            <span class="assignment-status pending">
+                Not Submitted
+            </span>
 
-                <span class="assignment-status pending">
-                    Not Submitted
-                </span>
-
-            {% endif %}
-
-        </div>
+        {% endif %}
 
     </div>
 
-    <!-- =========================
-         MAIN CONTENT
-    ========================== -->
+    <div class='detail-section'>
+        <div class="assignment-grid">
 
-    <div class="assignment-layout">
+            <!-- LEFT -->
 
-        <!-- LEFT COLUMN -->
-
-        <div class="assignment-main">
-
-            <!-- Instructions -->
-
-            <div class="assignment-section">
+            <div class="assignment-card">
 
                 <h2>Instructions</h2>
 
-                <p>
+                <div class="assignment-text">
 
                     {{ assignment.instructions|linebreaks }}
 
-                </p>
+                </div>
+                <br><br>
+                <hr>
+                {% if assignment.attachments.all %}
+                    
+                    <div class="attachment-list">
+
+                        {% for attachment in assignment.attachments.all %}
+
+                            <div class="attachment-item">
+
+                                <span>
+
+                                    📄 {{ attachment.file.name }}
+
+                                </span>
+
+                                <a
+                                    href="{{ attachment.file.url }}"
+                                    target="_blank">
+
+                                    Download
+
+                                </a>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-attachments">
+
+                        <div class="empty-icon">
+
+                            <h3>📂 No attachments</h3>
+
+                        </div>
+
+                        <p>- No attached reference files for this assignment.</p>
+
+                    </div>
+
+                {% endif %}
 
             </div>
 
-            <!-- Attachments -->
 
-            {% if assignment.attachments.all %}
+            <!-- RIGHT -->
 
-            <div class="assignment-section">
+            <div class="assignment-card">
 
-                <h2>Attachments</h2>
+            {% if request.user == classroom.teacher %}
 
-                <div class="attachment-list">
+                <h2>Teacher Summary</h2>
 
-                    {% for attachment in assignment.attachments.all %}
+                <div class="teacher-summary">
 
-                    <div class="attachment-item">
+                    <div class="summary-row">
 
-                        <span>
+                        <span>Total Points</span>
 
-                            📄 {{ attachment.file.name }}
+                        <strong>{{ assignment.points }}</strong>
 
-                        </span>
+                    </div>
+
+                    <div class="summary-row">
+
+                        <span>Total Students</span>
+
+                        <strong>{{ total_students }}</strong>
+
+                    </div>
+
+                    <div class="summary-row">
+
+                        <span>Submitted</span>
+
+                        <strong class="success">
+
+                            {{ submitted_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="summary-row">
+
+                        <span>Pending</span>
+
+                        <strong class="warning">
+
+                            {{ pending_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="summary-row">
+
+                        <span>Due Date</span>
+
+                        <strong>
+
+                            {{ assignment.classwork.due_date }}
+
+                        </strong>
+
+                    </div>
+                    <div class="submission-progress">
+
+                        <div class="progress-header">
+
+                            <span>Submission Progress</span>
+
+                            <strong>
+
+                                {{ progress|floatformat:0 }}%
+
+                            </strong>
+
+                        </div>
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress-fill"
+                                style="width:{{ progress }}%;">
+
+                            </div>
+
+                        </div>
+
+                        <small>
+
+                            {{ submitted_count }}
+                            /
+                            {{ total_students }}
+                            Students Submitted
+
+                        </small>
+
+                    </div>
+                    <br>
+
+                    <a
+                        href="{% url 'assignment:submission_list' assignment.id %}"
+                        class="classroom-dashboard-btn">
+
+                        View Submissions
+
+                    </a>
+
+                </div>
+
+            {% else %}
+
+                <h2>Your Work</h2>
+
+                {% if submission %}
+
+                    <div class="submission-box">
+
+                        <p>
+
+                            <strong>Submitted</strong><br>
+
+                            {{ submission.submitted_at }}
+
+                        </p>
+
+                        <hr>
+
+                        <p>
+
+                            <strong>Grade</strong><br>
+
+                            {% if submission.grade %}
+
+                                {{ submission.grade }} /
+                                {{ assignment.points }}
+
+                            {% else %}
+
+                                Not graded yet
+
+                            {% endif %}
+
+                        </p>
+
+                        {% if submission.feedback %}
+
+                            <hr>
+
+                            <strong>Feedback</strong>
+
+                            <div class="feedback-box">
+
+                                {{ submission.feedback }}
+
+                            </div>
+
+                        {% endif %}
+
 
                         <a
-                            href="{{ attachment.file.url }}"
-                            target="_blank">
+                            href="{{ submission.submission_file.url }}"
+                            class="classroom-dashboard-btn" style="padding: 5px 10px;">
 
-                            Download
+                            View Submission
 
                         </a>
 
                     </div>
 
-                    {% endfor %}
-
-                </div>
-
-            </div>
-
-            {% endif %}
-
-        </div>
-
-        <!-- RIGHT COLUMN -->
-
-        <div class="assignment-sidebar">
-
-            {% if request.user == classroom.teacher %}
-
-            <div class="assignment-section">
-
-                <div class="assignment-actions">
-
-                    <a
-                        href="{% url 'assignment:assignment_update' assignment.id %}"
-                        class="classroom-dashboard-btn">
-                        Edit Assignment
-                    </a>
-
-                    <!-- We'll build this later -->
-
-                    <a
-                        href="{% url 'assignment:submission_list' assignment.id %}"
-                        class="classroom-dashboard-btn">
-                        View Submissions
-                    </a>
-
-                </div>
-
-            </div>
-
-            {% else %}
-
-            <div class="assignment-section">
-
-                <h2>Your Submission</h2>
-
-                {% if submission %}
-
-                <div class="submission-box">
-
-                    <p>
-
-                        <strong>Submitted:</strong><br>
-
-                        {{ submission.submitted_at }}
-
-                    </p>
-
-                    <hr>
-
-                    <p>
-
-                        <strong>Grade</strong><br>
-
-                        {% if submission.grade %}
-
-                            {{ submission.grade }} / {{ assignment.points }}
-
-                        {% else %}
-
-                            Not graded yet
-
-                        {% endif %}
-
-                    </p>
-
-                    {% if submission.feedback %}
-
-                    <hr>
-
-                    <strong>Feedback</strong>
-
-                    <div class="feedback-box">
-
-                        {{ submission.feedback }}
-
-                    </div>
-
-                    {% endif %}
-
-                    <br>
-
-                    <a
-                        href="{{ submission.submission_file.url }}"
-                        class="classroom-dashboard-btn">
-                        Download Submission
-                    </a>
-
-                </div>
                 {% else %}
-                <form
-                    method="post"
-                    enctype="multipart/form-data"
-                    class="submission-form">
 
-                    {% csrf_token %}
+                    <form
+                        method="post"
+                        enctype="multipart/form-data"
+                        class="submission-form">
 
-                    {{ submission_form.as_p }}
+                        {% csrf_token %}
 
-                    <button
-                        type="submit"
-                        class="classroom-dashboard-btn">
-                        Submit Assignment
-                    </button>
+                        <input
+                            type="file"
+                            name="submission_file"
+                            id="submission-file"
+                            hidden>
 
-                </form>
+                        <div id="drop-zone">
+
+                            <div class="drop-zone-content">
+
+                                <div class="drop-icon">
+
+                                    📁
+
+                                </div>
+
+                                <h3>
+
+                                    Drag your file here
+
+                                </h3>
+
+                                <p>
+
+                                    or
+
+                                </p>
+
+                                <button
+                                    type="button"
+                                    id="browse-file"
+                                    class="classroom-dashboard-btn">
+
+                                    Browse Files
+
+                                </button>
+
+                                <small>
+
+                                    PDF · DOC · DOCX · ZIP · JPG · PNG
+
+                                </small>
+
+                            </div>
+
+                        </div>
+                        
+                        <p
+                            id="selected-file"
+                            class="selected-file">
+
+                            No file selected
+
+                        </p>
+                        <button
+                            type="submit"
+                            class="classroom-dashboard-btn" style="padding: 5px 10px; margin-top:10px;">
+
+                            Submit Assignment
+
+                        </button>
+                    </form>
+                    
+
                 {% endif %}
-            </div>
+
             {% endif %}
+
         </div>
+
+
+
+        <div class="assignment-footer">
+
+            <a
+                href="{% url 'classroom:classroom_classwork' classroom.id %}"
+                class="classroom-dashboard-btn">
+
+                ← Back to Classwork
+
+            </a>
+            <br>
+
+        </div>
+
     </div>
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
-
-    <div class="assignment-footer">
-        <a
-            href="{% url 'classroom:classroom_classwork' classroom.id %}"
-            class="classroom-dashboard-btn">
-            ← Back to Classwork
-        </a>
-    </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const fileInput =
+        document.getElementById(
+            "submission-file"
+        );
+
+    const browseButton =
+        document.getElementById(
+            "browse-file"
+        );
+
+    const dropZone =
+        document.getElementById(
+            "drop-zone"
+        );
+
+    const selected =
+        document.getElementById(
+            "selected-file"
+        );
+
+    // Teacher page doesn't have these elements
+    if (
+        !fileInput ||
+        !browseButton ||
+        !dropZone ||
+        !selected
+    ){
+        return;
+    }
+
+    browseButton.addEventListener(
+        "click",
+        function () {
+
+            fileInput.click();
+
+        }
+    );
+
+    dropZone.addEventListener(
+        "click",
+        function () {
+
+            fileInput.click();
+
+        }
+    );
+
+    fileInput.addEventListener(
+        "change",
+        function () {
+
+            if (fileInput.files.length){
+
+                selected.textContent =
+                    "📄 " +
+                    fileInput.files[0].name;
+
+            }
+
+        }
+    );
+
+    dropZone.addEventListener(
+        "dragover",
+        function (e){
+
+            e.preventDefault();
+
+            dropZone.classList.add(
+                "dragging"
+            );
+
+        }
+    );
+
+    dropZone.addEventListener(
+        "dragleave",
+        function (){
+
+            dropZone.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+    dropZone.addEventListener(
+        "drop",
+        function (e){
+
+            e.preventDefault();
+
+            dropZone.classList.remove(
+                "dragging"
+            );
+
+            fileInput.files =
+                e.dataTransfer.files;
+
+            if (fileInput.files.length){
+
+                selected.textContent =
+                    "📄 " +
+                    fileInput.files[0].name;
+
+            }
+
+        }
+    );
+
+});
+
+</script>
 {% endblock %}

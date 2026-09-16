@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Settings | PlayMate LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="classroom-header">
+
+    <h1>⚙ Settings</h1>
+
+    <p>
+        Manage your PlayMate account settings.
+    </p>
+
+</div>
+
+
+<div class="profile-form-container">
+
+    <div class="classroom-form-card settings-card">
+
+        <!-- ACCOUNT -->
+
+        <div class="settings-section">
+
+            <h2>👤 Account</h2>
+
+            <div class="settings-row">
+
+                <div class="settings-info">
+
+                    <strong>Profile Information</strong>
+
+                    <p>
+                        Manage your name, username, and email address.
+                    </p>
+
+                </div>
+
+                <a
+                    href="{% url 'accounts:edit_profile' %}"
+                    class="classroom-dashboard-btn">
+
+                    ✏️ Edit Profile
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- SECURITY -->
+
+        <div class="settings-section">
+
+            <h2>🔐 Security</h2>
+
+            <div class="settings-row">
+
+                <div class="settings-info">
+
+                    <strong>Password</strong>
+
+                    <p>
+                        Change your account password.
+                    </p>
+
+                </div>
+
+                <a
+                    href="{% url 'accounts:password_change' %}"
+                    class="classroom-dashboard-btn">
+
+                    🔑 Change Password
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- APPEARANCE -->
+
+        <div class="settings-section">
+
+            <h2>🎨 Appearance</h2>
+
+            <div class="settings-row">
+
+                <div class="settings-info">
+
+                    <strong>PlayMate Theme</strong>
+
+                    <p>
+                        PlayMate currently uses its default space theme.
+                    </p>
+
+                </div>
+
+                <span class="settings-status">
+                    🌌 Space Theme
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- BACK -->
+
+        <div class="settings-actions">
+
+            <a
+                href="{% url 'classroom:classroom_list' %}"
+                class="classroom-dashboard-btn">
+
+                ← Back to Classrooms
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -94,3 +94,32 @@ Neutrals:
     #f0f0f0 (text in .p)
 
     #011537 (subject card border)
+
+
+Phase 2
+
+AI Assistant
+
+Sidebar character
+
+Chat
+
+Teacher helper
+
+Question generator
+
+Recommendation engine
+
+Phase 3
+
+Polish
+
+Animations
+
+Notifications
+
+Responsive
+
+Final UI
+
+Bug fixing

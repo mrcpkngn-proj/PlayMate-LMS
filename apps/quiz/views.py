@@ -13,14 +13,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.db import transaction
 from django.utils import timezone
 from django.urls import reverse
-
+from apps.alec.memory import AlecMemory
 
 from .models import Answer, Attempt, Quiz, Choice, Question
 from .forms import QuizForm
 from .question_banks import get_question_bank
 
-from apps.classroom.models import ClassroomMember, Classroom, Classwork
+from apps.classroom.models import ClassroomMember, Classroom
 from apps.classroom.forms import ClassworkForm
+from apps.notifications.utils import create_notification
 
 
 def user_can_access_quiz(user, quiz):
@@ -200,6 +201,29 @@ def quiz_create(request, classroom_id):
                 quiz.classwork = classwork
                 quiz.save()
 
+                members = ClassroomMember.objects.filter(
+                    classroom=classroom
+                ).select_related("student")
+
+                for member in members:
+
+                    create_notification(
+
+                        recipient=member.student,
+
+                        title="📝 New Quiz",
+
+                        message=(
+                            f"{classroom.name}\n"
+                            f"{classwork.title}"
+                        ),
+
+                        url=reverse(
+                            "quiz:quiz_detail",
+                            args=[quiz.id],
+                        ),
+
+                    )
 
                 for index, question_text in enumerate(question_texts):
                     if not question_text.strip():
@@ -382,6 +406,52 @@ def quiz_delete(request, quiz_id):
     return render(request, "quiz/quiz_confirm_delete.html", {
         "quiz": quiz,
     })
+
+
+@login_required
+def quiz_detail(request, quiz_id):
+
+    quiz = get_object_or_404(
+        Quiz.objects.select_related(
+            "classwork",
+            "classwork__classroom",
+        ),
+        id=quiz_id,
+    )
+
+    if not user_can_access_quiz(request.user, quiz):
+        raise HttpResponseForbidden(
+            "You don't have access to this quiz."
+        )
+
+    is_teacher = (
+        request.user == quiz.classwork.classroom.teacher
+    )
+
+    completed_attempts = Attempt.objects.filter(
+        quiz=quiz,
+        student=request.user,
+        is_completed=True,
+    ).count()
+
+    attempts_left = max(
+        quiz.max_attempts - completed_attempts,
+        0,
+    )
+
+    total_questions = quiz.questions.count()
+
+    return render(
+        request,
+        "quiz/quiz_detail.html",
+        {
+            "quiz": quiz,
+            "is_teacher": is_teacher,
+            "attempts_left": attempts_left,
+            "completed_attempts": completed_attempts,
+            "total_questions": total_questions,
+        },
+    )
 
 
 @login_required
@@ -761,6 +831,21 @@ def submit_question(request, attempt_id, question_id, question_index):
     attempt.save()
 
     if attempt.is_completed:
+        AlecMemory().record_event(
+            student=request.user,
+            classroom=attempt.quiz.classwork.classroom,
+            event_type="quiz_completed",
+            title=attempt.quiz.classwork.title,
+            description=(
+                "Completed a quiz."
+            ),
+            metadata={
+                "attempt_id": attempt.id,
+                "quiz_id": attempt.quiz.id,
+                "score": float(attempt.score),
+            },
+
+        )
         return redirect(
             "quiz:quiz_result",
             attempt_id=attempt.id,
@@ -827,6 +912,27 @@ def submit_full_quiz(request, attempt_id):
     attempt.is_completed = True
     attempt.submitted_at = timezone.now()
     attempt.save()
+    AlecMemory().record_event(
+
+        student=request.user,
+
+        classroom=attempt.quiz.classwork.classroom,
+
+        event_type="quiz_completed",
+
+        title=attempt.quiz.classwork.title,
+
+        description=(
+            "Completed a quiz."
+        ),
+
+        metadata={
+            "attempt_id": attempt.id,
+            "quiz_id": attempt.quiz.id,
+            "score": float(attempt.score),
+        },
+
+    )
 
     return redirect(
         "quiz:quiz_result",

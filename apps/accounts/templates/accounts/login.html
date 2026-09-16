@@ -38,8 +38,8 @@
         </div>
 
         <div class="nav-right">
-            <a href="#">About</a>
-            <img src="{% static 'images/settings.png' %}" class="settings-icon" alt="Settings">
+            <a href="{% url 'accounts:about' %}">About</a>
+            {% comment %} <img src="{% static 'images/settings.png' %}" class="settings-icon" alt="Settings"> {% endcomment %}
         </div>
 
     </nav>
@@ -96,7 +96,7 @@
                     </div>
 
                     <div class="login-link">
-                        <a href="#">Forgot Password?</a>
+                        <a href="{% url 'accounts:password_recovery' %}">Forgot Password?</a>
                     </div>
                 </form>
             </div>

@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
+from django.urls import reverse
 
 from apps.classroom.models import Classroom, ClassroomMember, StreamPost
 from apps.classroom.forms import ClassworkForm
-
+from apps.alec.memory import AlecMemory
 from .models import Assignment, Submission, AssignmentAttachment
 from .forms import AssignmentForm, SubmissionForm, SubmissionGradeForm
 
+from apps.notifications.utils import create_notification
 
 
 def user_can_access_assignment(user, assignment):
@@ -50,6 +52,23 @@ def assignment_create(request, classroom_id):
                 assignment = assignment_form.save(commit=False)
                 assignment.classwork = classwork
                 assignment.save()
+
+                members = ClassroomMember.objects.filter(
+                    classroom=classroom
+                ).select_related("student")
+
+                for member in members:
+
+                    create_notification(
+                        recipient=member.student,
+                        classroom=classroom,
+                        title=f"📁 New Assignment",
+                        message=f"Assignment Title: {assignment.classwork.title}",
+                        url=reverse(
+                            "assignment:assignment_detail",
+                            args=[assignment.id],
+                        ),
+                    )
 
                 files = request.FILES.getlist("attachments")
 
@@ -226,6 +245,42 @@ def assignment_detail(request, assignment_id):
             new_submission.student = request.user
             new_submission.save()
 
+            AlecMemory().record_event(
+                student=request.user,
+                classroom=assignment.classwork.classroom,
+                event_type="assignment_submitted",
+                title=assignment.classwork.title,
+                description=(
+                    "Submitted an assignment."
+                ),
+                metadata={
+                    "assignment_id":
+                        assignment.id,
+                },
+            )
+
+            create_notification(
+
+                recipient=assignment.classwork.classroom.teacher,
+                classroom=assignment.classwork.classroom,
+                title="📤 Assignment Submitted",
+
+                message=(
+                    f"{request.user.get_full_name() or request.user.username}"
+                    f" submitted "
+                    f"{assignment.classwork.title}"
+                ),
+
+                url=reverse(
+
+                    "assignment:assignment_detail",
+
+                    args=[assignment.id],
+
+                ),
+
+            )
+
             return redirect(
                 "assignment:assignment_detail",
                 assignment_id=assignment.id,
@@ -233,6 +288,21 @@ def assignment_detail(request, assignment_id):
 
     else:
         form = SubmissionForm()
+
+    members = ClassroomMember.objects.filter(
+        classroom=classroom
+    ).count()
+
+    submitted_count = Submission.objects.filter(
+        assignment=assignment
+    ).count()
+
+    pending_count = members - submitted_count
+
+    progress = (
+        submitted_count / members * 100
+        if members else 0
+    )
 
     return render(
         request,
@@ -242,6 +312,10 @@ def assignment_detail(request, assignment_id):
             "classroom": classroom,
             "submission": submission,
             "submission_form": form,
+            "submitted_count": submitted_count,
+            "pending_count": pending_count,
+            "total_students": members,
+            "progress": progress,
         },
     )
 
@@ -328,6 +402,29 @@ def grade_submission(request, submission_id):
         if form.is_valid():
 
             form.save()
+
+            create_notification(
+
+                recipient=submission.student,
+                classroom=classroom,
+
+                title="⭐ Assignment Graded",
+
+                message=(
+
+                    f"{submission.assignment.classwork.title}"
+
+                ),
+
+                url=reverse(
+
+                    "assignment:assignment_detail",
+
+                    args=[submission.assignment.id],
+
+                ),
+
+            )
 
             return redirect(
                 "assignment:submission_list",

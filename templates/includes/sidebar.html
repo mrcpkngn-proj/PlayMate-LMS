@@ -1,5 +1,1694 @@
-<aside class="sidebar">
-  <div class="sidebar-content">
+{% load static %}
 
-  </div>
+<aside class="sidebar" id="alec-sidebar">
+
+    <div class="alec-card">
+
+        {# ========================================================= #}
+        {# ALEC HEADER                                                #}
+        {# ========================================================= #}
+
+        <div class="alec-header">
+
+            {% if alec_classroom %}
+
+                <img
+                    src="{% static 'images/wave_astronaut.png' %}"
+                    alt="👨‍🚀"
+                    class="alec-avatar"
+                >
+
+            {% else %}
+
+                <img
+                    src="{% static 'images/default_astronaut.png' %}"
+                    alt="👨‍🚀"
+                    class="alec-avatar"
+                >
+
+            {% endif %}
+
+            <div>
+
+                <h2>A.L.E.C.</h2>
+
+                <p class="alec-acronym">
+                    AI-enhanced Learning Environment Core
+                </p>
+
+                {% if alec_classroom %}
+
+                    <div class="alec-status">
+
+                        <span class="status-dot"></span>
+
+                        ONLINE
+
+                    </div>
+
+                {% else %}
+
+                    <div class="alec-status">
+
+                        <span class="status-dot offline"></span>
+
+                        STANDBY
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        {# ========================================================= #}
+        {# TEACHER ALEC                                               #}
+        {# ========================================================= #}
+
+        {% if is_teacher %}
+
+
+            {% if not alec_classroom %}
+
+                {# ------------------------------------------------- #}
+                {# Teacher without classroom                         #}
+                {# ------------------------------------------------- #}
+
+                <div class="alec-section">
+
+                    <p class="alec-greeting">
+
+                        A.L.E.C. says... Open a classroom to begin
+                        classroom analysis.
+
+                    </p>
+
+                </div>
+
+
+            {% else %}
+
+
+                {# ================================================= #}
+                {# CLASSROOM DASHBOARD                                #}
+                {# ================================================= #}
+
+                {% if page_context == "classroom_dashboard" %}
+
+                    <div class="alec-section">
+
+                        <h3>📊 Classroom Performance</h3>
+
+                        {% if performance %}
+
+                            <p>
+                                • Class Average
+                            </p>
+
+                            <div class="performance-bar">
+
+                                <div
+                                    class="performance-fill"
+                                    style="width: {{ performance.classroom_average }}%;"
+                                ></div>
+
+                            </div>
+
+                            <strong>
+                                {{ performance.classroom_average|floatformat:1 }}%
+                            </strong>
+
+                        {% else %}
+
+                            <p>
+                                No classroom performance data yet.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>⚠ Student Risk</h3>
+
+                        {% if high_risk_students %}
+
+                            <p class="risk-high">
+
+                                🔴 {{ high_risk_students|length }}
+                                student{{ high_risk_students|length|pluralize }}
+                                at high risk.
+
+                            </p>
+
+                        {% elif medium_risk_students %}
+
+                            <p class="risk-medium">
+
+                                🟡 {{ medium_risk_students|length }}
+                                student{{ medium_risk_students|length|pluralize }}
+                                may need additional support.
+
+                            </p>
+
+                        {% else %}
+
+                            <p class="risk-low">
+
+                                🟢 No students currently require extra attention.
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>🎯 Students with Lowest Average</h3>
+
+                        {% if priority_students %}
+
+                            {% for item in priority_students|slice:":3" %}
+
+                                <p>
+
+                                    <strong>
+                                        {{ item.student.get_full_name|default:item.student.username }}
+                                    </strong>
+
+                                    —
+                                    {{ item.performance.overall_average|floatformat:1 }}%
+
+                                    <small>
+
+                                        |
+                                        {{ item.level }}
+                                        ·
+                                        {{ item.risk }} risk
+
+                                    </small>
+
+                                </p>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>
+                                No priority students identified.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📝 Pending Grading</h3>
+
+                        {% if pending_grading_count > 0 %}
+
+                            <p class="risk-medium">
+
+                                ⚠ {{ pending_grading_count }}
+                                submission{{ pending_grading_count|pluralize }}
+                                waiting for grading.
+
+                            </p>
+
+                        {% else %}
+
+                            <p class="risk-low">
+
+                                ✓ No submissions are waiting for grading.
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section alec-recommendations">
+
+                        <h3>💡 Recommendations</h3>
+
+                        {% if recommendations %}
+
+                            {% for recommendation in recommendations %}
+
+                                <div class="recommendation-item">
+
+                                    <span class="recommendation-icon">
+                                        ▸
+                                    </span>
+
+                                    <p>
+                                        {{ recommendation }}
+                                    </p>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>
+                                No recommendations at this time.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>🛰 Classroom Activity</h3>
+
+                        {% if recent_activity %}
+
+                            {% for activity in recent_activity|slice:":3" %}
+
+                                <p>
+
+                                    <strong>
+                                        {{ activity.student.get_full_name|default:activity.student.username }}
+                                    </strong>
+
+                                    {% if activity.type == "quiz_completed" %}
+
+                                        completed a quiz:
+
+                                    {% elif activity.type == "assignment_submitted" %}
+
+                                        submitted an assignment:
+
+                                    {% endif %}
+
+                                    {{ activity.title }}
+
+                                </p>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>
+                                No recent classroom activity.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                {# ================================================= #}
+                {# CLASSROOM STREAM                                   #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_stream" %}
+
+                    <div class="alec-section">
+
+                        <h3>📡 Classroom Stream</h3>
+
+                        <p>
+                            A.L.E.C. is monitoring classroom activity.
+                        </p>
+
+                        {% if recent_activity %}
+
+                            <p>
+
+                                Latest activity:
+
+                                <strong>
+                                    {{ recent_activity.0.title }}
+                                </strong>
+
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                No recent classroom activity.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# CLASSROOM CLASSWORK                                #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_classwork" %}
+
+                    <div class="alec-section">
+
+                        <h3>📝 Classwork Overview</h3>
+
+                        {% if pending_grading_count %}
+
+                            <p class="risk-medium">
+
+                                ⚠ {{ pending_grading_count }}
+                                submission{{ pending_grading_count|pluralize }}
+                                waiting for grading.
+
+                            </p>
+
+                        {% else %}
+
+                            <p class="risk-low">
+
+                                ✓ No submissions are waiting for grading.
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📊 Classroom Performance</h3>
+
+                        <p>
+
+                            Class average:
+
+                            <strong>
+                                {{ classroom_average|floatformat:1 }}%
+                            </strong>
+
+                        </p>
+
+                    </div>
+
+
+                    {% if recommendations %}
+
+                        <div class="alec-section alec-recommendations">
+
+                            <h3>💡 A.L.E.C. Recommendation</h3>
+
+                            {% for recommendation in recommendations|slice:":2" %}
+
+                                <div class="recommendation-item">
+
+                                    <span class="recommendation-icon">
+                                        ▸
+                                    </span>
+
+                                    <p>
+                                        {{ recommendation }}
+                                    </p>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                {# ================================================= #}
+                {# CLASSROOM PEOPLE                                    #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_people" %}
+
+                    <div class="alec-section">
+
+                        <h3>👥 Classroom Members</h3>
+
+                        <p>
+                            Currently managing the members
+                            of this classroom...
+                        </p>
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# CLASSROOM GRADES                                    #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_grades" %}
+
+                    <div class="alec-section">
+
+                        <h3>📊 Grade Overview</h3>
+
+                        <p>
+
+                            Current class average:
+
+                            <strong>
+                                {{ classroom_average|floatformat:1 }}%
+                            </strong>
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>⚠ Students Requiring Attention</h3>
+
+                        {% if high_risk_students %}
+
+                            <p class="risk-high">
+
+                                🔴
+                                {{ high_risk_students|length }}
+                                student{{ high_risk_students|length|pluralize }}
+                                at high risk.
+
+                            </p>
+
+                        {% elif medium_risk_students %}
+
+                            <p class="risk-medium">
+
+                                🟡
+                                {{ medium_risk_students|length }}
+                                student{{ medium_risk_students|length|pluralize }}
+                                may need monitoring.
+
+                            </p>
+
+                        {% else %}
+
+                            <p class="risk-low">
+
+                                🟢 No students currently require
+                                additional attention.
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📝 Grading Status</h3>
+
+                        {% if pending_grading_count %}
+
+                            <p class="risk-medium">
+
+                                ⚠ {{ pending_grading_count }}
+                                submission{{ pending_grading_count|pluralize }}
+                                still need{{ pending_grading_count|pluralize:"s," }}
+                                grading.
+
+                            </p>
+
+                        {% else %}
+
+                            <p class="risk-low">
+
+                                ✓ All submitted assignments have been graded.
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# CLASSROOM ANALYTICS                                #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_analytics" %}
+
+                    <div class="alec-section">
+
+                        <h3>📈 Classroom Analytics</h3>
+
+                        <p>
+
+                            Class average:
+
+                            <strong>
+                                {{ classroom_average|floatformat:1 }}%
+                            </strong>
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📚 Performance Breakdown</h3>
+
+                        <p>
+
+                            Quiz average:
+                            <strong>
+                                {{ quiz_average|floatformat:1 }}%
+                            </strong>
+
+                        </p>
+
+                        <p>
+
+                            Assignment average:
+                            <strong>
+                                {{ assignment_average|floatformat:1 }}%
+                            </strong>
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>⚠ Student Risk</h3>
+
+                        {% if high_risk_students %}
+
+                            <p class="risk-high">
+
+                                🔴
+                                {{ high_risk_students|length }}
+                                high-risk student{{ high_risk_students|length|pluralize }}.
+
+                            </p>
+
+                        {% elif medium_risk_students %}
+
+                            <p class="risk-medium">
+
+                                🟡
+                                {{ medium_risk_students|length }}
+                                student{{ medium_risk_students|length|pluralize }}
+                                may need monitoring.
+
+                            </p>
+
+                        {% else %}
+
+                            <p class="risk-low">
+
+                                🟢 No students currently require
+                                additional attention.
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if priority_students %}
+
+                        <div class="alec-section">
+
+                            <h3>🎯 Priority Students</h3>
+
+                            {% for item in priority_students|slice:":3" %}
+
+                                <p>
+
+                                    <strong>
+                                        {{ item.student.get_full_name|default:item.student.username }}
+                                    </strong>
+
+                                    —
+                                    {{ item.performance.overall_average|floatformat:1 }}%
+
+                                    <small>
+
+                                        |
+                                        {{ item.level }}
+                                        ·
+                                        {{ item.risk }} risk
+
+                                    </small>
+
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if recommendations %}
+
+                        <div class="alec-section alec-recommendations">
+
+                            <h3>💡 Recommendations</h3>
+
+                            {% for recommendation in recommendations %}
+
+                                <div class="recommendation-item">
+
+                                    <span class="recommendation-icon">
+                                        ▸
+                                    </span>
+
+                                    <p>
+                                        {{ recommendation }}
+                                    </p>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                {# ================================================= #}
+                {# STUDENT GRADES                                    #}
+                {# ================================================= #}
+
+                {% elif page_context == "student_grades" %}
+
+                    <div class="alec-section">
+
+                        <h3>📊 Student Grades</h3>
+
+                        <p>
+                            You're viewing individual student
+                            grade information.
+                        </p>
+
+                        <p>
+                            A.L.E.C. is standing by to assist
+                            with grade analysis.
+                        </p>
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# STUDENT QUIZ ATTEMPTS                              #}
+                {# ================================================= #}
+
+                {% elif page_context == "student_quiz_attempts" %}
+
+                    <div class="alec-section">
+
+                        <h3>🧠 Quiz Attempts</h3>
+
+                        <p>
+                            You're reviewing a student's quiz
+                            attempt history.
+                        </p>
+
+                        <p>
+                            A.L.E.C. is monitoring performance
+                            patterns.
+                        </p>
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# STUDENT DASHBOARD                                  #}
+                {# ================================================= #}
+
+                {% elif page_context == "student_dashboard" %}
+
+                    <div class="alec-section">
+
+                        <p class="alec-greeting">
+
+                            A.L.E.C. says...
+                            {{ greeting }}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📊 Student Performance</h3>
+
+                        {% if performance %}
+
+                            <div class="performance-bar">
+
+                                <div
+                                    class="performance-fill"
+                                    style="width: {{ performance.overall_average }}%;"
+                                ></div>
+
+                            </div>
+
+                            <strong>
+                                {{ performance.overall_average|floatformat:1 }}%
+                            </strong>
+
+                            <small>
+                                {{ level }}
+                            </small>
+
+                        {% else %}
+
+                            <p>
+                                No performance data yet.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# ASSIGNMENT                                          #}
+                {# ================================================= #}
+
+                {% elif page_context == "assignment" %}
+
+                    <div class="alec-section">
+
+                        <h3>📝 Assignment</h3>
+
+                        <p>
+                            You're currently working with an assignment.
+                        </p>
+
+                        {% if priority %}
+
+                            <p>
+                                A.L.E.C. priority:
+                                <strong>
+                                    {{ priority.title }}
+                                </strong>
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# QUIZ                                                #}
+                {# ================================================= #}
+
+                {% elif page_context == "quiz" %}
+
+                    <div class="alec-section">
+
+                        <h3>🧠 Quiz</h3>
+
+                        <p>
+                            Focus on the current quiz.
+                            Read each question carefully.
+                        </p>
+
+                        {% if progress %}
+
+                            <p>
+                                Recent performance:
+                                <strong>
+                                    {{ progress.message }}
+                                </strong>
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# ATTEMPT                                             #}
+                {# ================================================= #}
+
+                {% elif page_context == "attempt" %}
+
+                    <div class="alec-section">
+
+                        <h3>📋 Quiz Attempt</h3>
+
+                        <p>
+                            You're reviewing a quiz attempt.
+                        </p>
+
+                        {% if event_message %}
+
+                            <p>
+                                {{ event_message }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# OTHER                                                #}
+                {# ================================================= #}
+
+                {% else %}
+
+                    <div class="alec-section">
+
+                        <p class="alec-greeting">
+
+                            A.L.E.C. is standing by.
+
+                        </p>
+
+                        <p>
+                            Open a classroom page to activate
+                            contextual classroom analysis.
+
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                {# ================================================= #}
+                {# TEACHER COMPANION                                   #}
+                {# ================================================= #}
+
+                <div class="alec-companion">
+
+                    <div class="alec-astronaut-display">
+
+                        <img
+                            id="alec-rotating-astronaut"
+                            src="{% static 'images/alec_1.png' %}"
+                            alt="A.L.E.C. astronaut"
+                        >
+
+                    </div>
+
+                    <div class="alec-companion-name">
+                        A.L.E.C.
+                    </div>
+
+                    <p>
+
+                        {% if page_context == "classroom_people" %}
+
+                            A.L.E.C standing by...
+
+                        {% elif page_context == "classroom_stream" %}
+
+                            Monitoring classroom activity. 📡
+
+                        {% elif page_context == "classroom_classwork" %}
+
+                            Let's keep the classwork on track. 📝
+
+                        {% elif page_context == "classroom_grades" %}
+
+                            Reviewing classroom grades. 📊
+
+                        {% elif page_context == "classroom_analytics" %}
+
+                            Classroom analysis complete. 📈
+
+                        {% else %}
+
+                            Continuing to monitor your classroom... 
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+
+        {# ========================================================= #}
+        {# STUDENT ALEC                                               #}
+        {# ========================================================= #}
+
+        {% else %}
+
+
+            {% if not alec_classroom %}
+
+                <div class="alec-section">
+
+                    <p class="alec-greeting">
+
+                        Open a classroom to activate A.L.E.C.
+
+                    </p>
+
+                </div>
+
+
+            {% else %}
+
+
+                {# ================================================= #}
+                {# STUDENT DASHBOARD                                  #}
+                {# ================================================= #}
+
+                {% if page_context == "student_dashboard" %}
+
+                    <div class="alec-section">
+
+                        <p class="alec-greeting">
+
+                            A.L.E.C. says...
+                            {{ greeting }}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📊 Performance Analysis</h3>
+
+                        {% if performance %}
+
+                            <div class="performance-bar">
+
+                                <div
+                                    class="performance-fill"
+                                    style="width: {{ performance.overall_average }}%;"
+                                ></div>
+
+                            </div>
+
+                            <strong>
+                                {{ performance.overall_average|floatformat:1 }}%
+                            </strong>
+
+                            <small>
+                                {{ level }}
+                            </small>
+
+                        {% else %}
+
+                            <p>
+                                No performance data yet.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>🛰 Status</h3>
+
+                        <p style="font-family: 'VT323'">
+
+                            {{ status_message }}
+
+                        </p>
+
+                        <p>
+                            Mood:
+                            Feeling {{ mood_name }}
+                            {{ mood_icon }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📋 Task Workload</h3>
+
+                        <p>
+
+                            {{ pending_task_count }}
+                            pending task{{ pending_task_count|pluralize }}
+                            out of
+                            {{ total_task_count }}
+                            total.
+
+                        </p>
+
+                        {% if pending_task_count >= 3 %}
+
+                            <p class="risk-medium">
+
+                                ⚠ {{ pending_task_message }}
+
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                {{ pending_task_message }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>🎯 Current Mission</h3>
+
+                        {% if priority %}
+
+                            <p>
+                                A.L.E.C:
+                                {{ priority.message }}
+                            </p>
+
+                            <h2>
+                                📁 {{ priority.title }}
+                            </h2>
+
+                            <small>
+                                {{ priority.reason }}
+                            </small>
+
+                        {% else %}
+
+                            <p>
+                                No active mission.
+                                You have completed all assigned tasks!
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📈 Learning Insights</h3>
+
+                        {% if summary %}
+
+                            <p>
+                                {{ summary }}
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                Not enough data.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if event_message %}
+
+                        <div class="alec-section alec-event">
+
+                            <h3>🧠 Recent Activity</h3>
+
+                            <p>
+                                {{ event_message }}
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if memory_message %}
+
+                        <div class="alec-section alec-memory">
+
+                            <h3>🧠 A.L.E.C. noticed...</h3>
+
+                            <p>
+                                {{ memory_message }}
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="alec-section">
+
+                        <h3>⚠ Risk Level</h3>
+
+                        {% if risk == "Low" %}
+
+                            <p class="risk-low">
+                                🟢 LOW
+                            </p>
+
+                        {% elif risk == "Medium" %}
+
+                            <p class="risk-medium">
+                                🟡 MEDIUM
+                            </p>
+
+                        {% elif risk == "High" %}
+
+                            <p class="risk-high">
+                                🔴 HIGH
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                Unknown. No data yet.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>💡 Recommended Next Action</h3>
+
+                        {% if learning %}
+
+                            {% for recommendation in learning %}
+
+                                <p>
+                                    {{ recommendation }}
+                                </p>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>
+                                No recommendations.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# STUDENT STREAM                                     #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_stream" %}
+
+                    <div class="alec-section">
+
+                        <h3>📡 Classroom Stream</h3>
+
+                        <p>
+                            A.L.E.C. is monitoring classroom updates.
+                        </p>
+
+                        {% if recent_events %}
+
+                            <p>
+                                {{ event_message }}
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                No new activity to report.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# STUDENT CLASSWORK                                  #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_classwork" %}
+
+                    <div class="alec-section">
+
+                        <h3>📝 Your Classwork</h3>
+
+                        <p>
+
+                            {{ pending_task_count }}
+                            pending task{{ pending_task_count|pluralize }}
+                            out of
+                            {{ total_task_count }}
+                            total.
+
+                        </p>
+
+                    </div>
+
+
+                    {% if priority %}
+
+                        <div class="alec-section">
+
+                            <h3>🎯 Next Priority</h3>
+
+                            <p>
+                                <strong>
+                                    {{ priority.title }}
+                                </strong>
+                            </p>
+
+                            <p>
+                                {{ priority.message }}
+                            </p>
+
+                            <small>
+                                {{ priority.reason }}
+                            </small>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if overdue %}
+
+                        <div class="alec-section">
+
+                            <h3>⚠ Overdue Work</h3>
+
+                            <p class="risk-high">
+
+                                🔴 You have
+                                {{ overdue|length }}
+                                overdue task{{ overdue|length|pluralize }}.
+
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+
+                {# ================================================= #}
+                {# STUDENT PEOPLE                                      #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_people" %}
+
+                    <div class="alec-section">
+
+                        <h3>👥 Classmates</h3>
+
+                        <p>
+                            Currently viewing the members
+                            of this classroom.
+                        </p>
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# STUDENT GRADES                                      #}
+                {# ================================================= #}
+
+                {% elif page_context == "student_grades" %}
+
+                    <div class="alec-section">
+
+                        <h3>📊 Your Grades</h3>
+
+                        {% if performance %}
+
+                            <p>
+
+                                Overall average:
+
+                                <strong>
+                                    {{ performance.overall_average|floatformat:1 }}%
+                                </strong>
+
+                            </p>
+
+                            <p>
+
+                                Quiz average:
+
+                                <strong>
+                                    {{ performance.quiz_average|floatformat:1 }}%
+                                </strong>
+
+                            </p>
+
+                            <p>
+
+                                Assignment average:
+
+                                <strong>
+                                    {{ performance.assignment_average|floatformat:1 }}%
+                                </strong>
+
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                No grade data available yet.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📈 Progress</h3>
+
+                        {% if progress %}
+
+                            <p>
+                                {{ progress.message }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# STUDENT QUIZ ATTEMPTS                              #}
+                {# ================================================= #}
+
+                {% elif page_context == "student_quiz_attempts" %}
+
+                    <div class="alec-section">
+
+                        <h3>🧠 Quiz Performance</h3>
+
+                        {% if performance %}
+
+                            <p>
+
+                                Current quiz average:
+
+                                <strong>
+                                    {{ performance.quiz_average|floatformat:1 }}%
+                                </strong>
+
+                            </p>
+
+                        {% endif %}
+
+                        {% if progress %}
+
+                            <p>
+                                {{ progress.message }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# QUIZ                                                 #}
+                {# ================================================= #}
+
+                {% elif page_context == "quiz" %}
+
+                    <div class="alec-section">
+
+                        <h3>🧠 Quiz Mission</h3>
+
+                        <p>
+                            Focus on the current quiz.
+                            Read each question carefully.
+                        </p>
+
+                        {% if progress %}
+
+                            <p>
+                                Recent performance:
+                                {{ progress.message }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# ASSIGNMENT                                          #}
+                {# ================================================= #}
+
+                {% elif page_context == "assignment" %}
+
+                    <div class="alec-section">
+
+                        <h3>📝 Assignment Mission</h3>
+
+                        <p>
+                            Focus on completing the current
+                            assignment carefully.
+                        </p>
+
+                        {% if priority %}
+
+                            <p>
+                                A.L.E.C. priority:
+                                <strong>
+                                    {{ priority.title }}
+                                </strong>
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# ATTEMPT                                             #}
+                {# ================================================= #}
+
+                {% elif page_context == "attempt" %}
+
+                    <div class="alec-section">
+
+                        <h3>📋 Quiz Attempt</h3>
+
+                        <p>
+                            You're reviewing your quiz attempt.
+                        </p>
+
+                        {% if event_message %}
+
+                            <p>
+                                {{ event_message }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# CLASSROOM DASHBOARD FALLBACK                         #}
+                {# ================================================= #}
+
+                {% elif page_context == "classroom_dashboard" %}
+
+                    <div class="alec-section">
+
+                        <p class="alec-greeting">
+
+                            A.L.E.C. says...
+                            {{ greeting }}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="alec-section">
+
+                        <h3>📊 Performance</h3>
+
+                        {% if performance %}
+
+                            <div class="performance-bar">
+
+                                <div
+                                    class="performance-fill"
+                                    style="width: {{ performance.overall_average }}%;"
+                                ></div>
+
+                            </div>
+
+                            <strong>
+                                {{ performance.overall_average|floatformat:1 }}%
+                            </strong>
+
+                        {% endif %}
+
+                    </div>
+
+
+                {# ================================================= #}
+                {# OTHER                                                #}
+                {# ================================================= #}
+
+                {% else %}
+
+                    <div class="alec-section">
+
+                        <p class="alec-greeting">
+
+                            A.L.E.C. is standing by.
+
+                        </p>
+
+                        <p>
+                            Navigate to a classroom activity
+                            to receive contextual assistance.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                {# ================================================= #}
+                {# STUDENT COMPANION                                   #}
+                {# ================================================= #}
+
+                <div class="alec-companion">
+
+                    <div class="alec-astronaut-display">
+
+                        <img
+                            id="alec-rotating-astronaut"
+                            src="{% static 'images/alec_1.png' %}"
+                            alt="A.L.E.C. astronaut"
+                        >
+
+                    </div>
+
+                    <div class="alec-companion-name">
+                        A.L.E.C.
+                    </div>
+
+                    <p>
+
+                        {% if page_context == "classroom_people" %}
+
+                            A.L.E.C. standing by...
+
+                        {% elif page_context == "classroom_stream" %}
+
+                            Monitoring the classroom stream. 📡
+
+                        {% elif page_context == "classroom_classwork" %}
+
+                            Let's get those missions completed. 🚀
+
+                        {% elif page_context == "student_grades" %}
+
+                            Reviewing your progress. 📊
+
+                        {% elif page_context == "quiz" %}
+
+                            Stay focused, cadet. You've got this. 🧠
+
+                        {% elif page_context == "assignment" %}
+
+                            Take your time and do your best. 📝
+
+                        {% else %}
+
+                            Make me proud, cadet. 🚀
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
 </aside>
+
+
+{# ========================================================= #}
+{# ALEC ASTRONAUT ANIMATION                                   #}
+{# ========================================================= #}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const astronaut =
+        document.getElementById(
+            "alec-rotating-astronaut"
+        );
+
+    if (!astronaut) {
+        return;
+    }
+
+    const images = [
+
+        "{% static 'images/alec_1.png' %}",
+
+        "{% static 'images/alec_2.png' %}",
+
+        "{% static 'images/alec_3.png' %}",
+
+    ];
+
+    let currentIndex = 0;
+
+    setInterval(function () {
+
+        astronaut.classList.add("fade-out");
+
+        setTimeout(function () {
+
+            currentIndex =
+                (currentIndex + 1)
+                % images.length;
+
+            astronaut.src =
+                images[currentIndex];
+
+            astronaut.classList.remove(
+                "fade-out"
+            );
+
+        }, 600);
+
+    }, 3000);
+
+});
+
+</script>

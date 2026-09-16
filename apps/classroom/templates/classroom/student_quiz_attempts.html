@@ -38,89 +38,92 @@
 
     </div>
 
-    <table class="classroom-table">
+    <div class='classroom-stream'>
 
-        <thead>
+        <table class="classroom-table">
 
-            <tr>
+            <thead>
 
-                <th>Attempt</th>
-                <th>Submitted</th>
-                <th>Score</th>
-                <th>Percentage</th>
-                <th></th>
+                <tr>
 
-            </tr>
+                    <th>Attempt</th>
+                    <th>Submitted</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th></th>
 
-        </thead>
+                </tr>
 
-        <tbody>
+            </thead>
 
-        {% for row in attempt_rows %}
+            <tbody>
 
-            <tr>
+            {% for row in attempt_rows %}
 
-                <td>
+                <tr>
 
-                    Attempt {{ forloop.counter }}
+                    <td>
 
-                </td>
+                        Attempt {{ forloop.counter }}
 
-                <td>
+                    </td>
 
-                    {{ row.attempt.submitted_at|date:"M d, Y • h:i A" }}
+                    <td>
 
-                </td>
+                        {{ row.attempt.submitted_at|date:"M d, Y • h:i A" }}
 
-                <td>
+                    </td>
 
-                    {{ row.attempt.score }} / {{ total_points }}
+                    <td>
 
-                </td>
+                        {{ row.attempt.score }} / {{ total_points }}
 
-                <td>
+                    </td>
 
-                    <span class="grade-badge">
+                    <td>
 
-                        {{ row.percentage|floatformat:1 }}%
+                        <span class="grade-badge">
 
-                    </span>
+                            {{ row.percentage|floatformat:1 }}%
 
-                </td>
+                        </span>
 
-                <td>
+                    </td>
 
-                    <a
-                        href="{% url 'quiz:quiz_result' row.attempt.id %}"
-                        class="classroom-dashboard-btn">
+                    <td>
 
-                        View Result
+                        <a
+                            href="{% url 'quiz:quiz_result' row.attempt.id %}"
+                            class="classroom-dashboard-btn">
 
-                    </a>
+                            View Result
 
-                </td>
+                        </a>
 
-            </tr>
+                    </td>
 
-        {% empty %}
+                </tr>
 
-            <tr>
+            {% empty %}
 
-                <td
-                    colspan="5"
-                    class="empty-row">
+                <tr>
 
-                    No completed attempts.
+                    <td
+                        colspan="5"
+                        class="empty-row">
 
-                </td>
+                        No completed attempts.
 
-            </tr>
+                    </td>
 
-        {% endfor %}
+                </tr>
 
-        </tbody>
+            {% endfor %}
 
-    </table>
+            </tbody>
+
+        </table>
+    </div>
 
 </div>
 

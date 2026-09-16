@@ -15,7 +15,7 @@
           Results for {{ attempt.quiz.classwork.title }}
       </h1>
 
-      <h2>{{ attempt.score|floatformat:2 }}/{{ total_points|floatformat:2 }}</h2>
+      <p> Score: {{ attempt.score|floatformat:2 }}/{{ total_points|floatformat:2 }}</p>
 
       {% if is_teacher_attempt %}
           <p class="result-status">🧪 Teacher Test Run</p>
@@ -35,8 +35,6 @@
 
       {% else %}
 
-          <p class="result-status">🎓 Student Result</p>
-
           <p>Attempts Remaining:<strong>{{ attempts_left }}/{{ max_attempts }}</strong></p>
 
           {% if attempts_left > 0 %}
@@ -46,7 +44,7 @@
                   class="quiz-action-btn-results">
                   Retry Quiz
               </a>
-
+              <br><br>
           {% else %}
 
               <p>You have used all available attempts.</p>

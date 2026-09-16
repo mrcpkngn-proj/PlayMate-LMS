@@ -45,17 +45,55 @@
 
             <div class="classwork-info">
 
-                {% if item.work_type == "assignment" %}
+                <h2>📁 {{ item.title }}</h2>
 
-                    <h2>📁{{ item.title }}</h2>
+                {% if not is_teacher %}
 
-                {% elif item.work_type == "quiz" %}
+                <p class="classwork-result">
+                    {% if item.work_type == "assignment"%}
+                        {% if item.assignment_status == "graded" %}
 
-                    <h2>📝{{ item.title }}</h2>
+                            🟢 {{ item.submission.grade }}
+                            /
+                            {{ item.assignment.points }} 
+
+                        {% elif item.assignment_status == "submitted" %}
+
+                            🟡 Awaiting Grade  
+
+                        {% elif item.assignment_status == "missing" %}
+
+                            🔴 Missing  
+
+                        {% else %}
+
+                            ⚪ Not Submissions Yet
+
+                        {% endif %}
+                    {% endif %}
+                </p>
 
                 {% endif %}
 
-                <p>{{ item.description }}</p>
+                {% if not is_teacher %}
+
+                <p class="classwork-result">
+                    {% if item.work_type == "quiz"%}
+                        {% if item.best_score is not None %}
+
+                            🏆 Highest Score:
+                            {{ item.best_score }}/{{ item.total_points }} 
+                            ({{ item.best_percentage|floatformat:1 }}%)
+
+                        {% else %}
+
+                            No attempts yet.
+
+                        {% endif %}
+                    {% endif %}
+                </p>
+
+                {% endif %}
 
                 <p>Date Assigned: {{item.created_at}}</p>
 
@@ -112,7 +150,7 @@
 
                     {% if request.user == classroom.teacher %}
                         <a
-                            href="{% url 'quiz:take_quiz' item.quiz.id %}"
+                            href="{% url 'quiz:quiz_detail' item.quiz.id %}"
                             class="classroom-dashboard-btn">
                             View
                         </a>
@@ -128,9 +166,9 @@
                         </a>
                     {% else %}
                         <a
-                            href="{% url 'quiz:take_quiz' item.quiz.id %}"
+                            href="{% url 'quiz:quiz_detail' item.quiz.id %}"
                             class="classroom-dashboard-btn">
-                            Open
+                            View
                         </a>
                     {% endif %}
 

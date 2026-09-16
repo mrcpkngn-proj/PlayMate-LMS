@@ -1,0 +1,247 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>PlayMate LMS | About</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/login.css' %}">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="cursor-glow"></div>
+
+<div class="login-page">
+
+    <!-- NAVBAR -->
+
+    <nav class="login-navbar">
+
+        <div class="nav-left">
+
+            <a href="{% url 'accounts:login' %}">
+
+                <img
+                    src="{% static 'images/navlogo.png' %}"
+                    alt="PlayMate"
+                    class="nav-logo">
+
+            </a>
+
+            <div class="nav-buttons">
+
+                <a
+                    href="{% url 'accounts:login' %}"
+                    class="nav-btn">
+
+                    Login
+
+                </a>
+
+                <a
+                    href="{% url 'accounts:register' %}"
+                    class="nav-btn">
+
+                    Register
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav-right">
+
+            <a
+                href="{% url 'accounts:about' %}"
+                class="active">
+
+                About
+
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- CONTENT -->
+
+    <div class="login-content">
+
+        <!-- LEFT -->
+
+        <div class="login-left">
+
+            <div class="login-card about-card">
+
+                <h2>🚀 About PlayMate</h2>
+
+                <p>
+                    Welcome to <strong>PlayMate LMS</strong>!
+                </p>
+
+                <p>
+                    PlayMate is a gamified learning management
+                    system designed to make learning more
+                    interactive, engaging, and enjoyable.
+                </p>
+
+
+                <h3>🎮 What can you do?</h3>
+
+                <p>
+                    <strong>🏫 Classrooms</strong><br>
+                    Join and manage learning classrooms where
+                    teachers can organize lessons, quizzes,
+                    assignments, and announcements.
+                </p>
+
+                <p>
+                    <strong>📝 Interactive Learning</strong><br>
+                    Complete quizzes and assignments while
+                    tracking your learning progress.
+                </p>
+
+                <p>
+                    <strong>📊 Learning Analytics</strong><br>
+                    Students can monitor their performance,
+                    while teachers can view classroom and
+                    student performance.
+                </p>
+
+
+                <h3>🚀 Meet A.L.E.C.</h3>
+
+                <p>
+                    <strong>
+                        AI-enhanced Learning Environment Core
+                    </strong>
+                </p>
+
+                <p>
+                    A.L.E.C. is PlayMate's learning companion
+                    designed to provide students and teachers
+                    with useful learning insights and classroom
+                    information.
+                </p>
+
+
+                <div class="login-buttons">
+
+                    <a
+                        href="{% url 'accounts:login' %}"
+                        class="btn-blue">
+
+                        🚀 Sign-in now!
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div class="login-right">
+
+            <div class="logo">
+
+                <img
+                    src="{% static 'images/logo.png' %}"
+                    alt="PlayMate LMS"
+                    class="img-logo">
+
+                <img
+                    src="{% static 'images/logo-text.png' %}"
+                    class="logo-text">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const glow =
+    document.querySelector('.cursor-glow');
+
+document.addEventListener(
+    'mousemove',
+    e => {
+
+        glow.style.transform =
+            `translate(${e.clientX}px, ${e.clientY}px)`;
+
+    }
+);
+
+document.addEventListener(
+    'mouseover',
+    e => {
+
+        const tag =
+            e.target.tagName.toLowerCase();
+
+        const isInteractive =
+            tag === 'input' ||
+            tag === 'textarea' ||
+            tag === 'a' ||
+            tag === 'button' ||
+            window.getComputedStyle(
+                e.target
+            ).cursor === 'pointer' ||
+            window.getComputedStyle(
+                e.target
+            ).cursor === 'text';
+
+        if (isInteractive) {
+
+            glow.classList.add('hidden');
+
+            document.body.style.cursor = '';
+
+        } else {
+
+            glow.classList.remove('hidden');
+
+            document.body.style.cursor = 'none';
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

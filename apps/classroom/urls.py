@@ -25,7 +25,7 @@ urlpatterns = [
     path("<int:pk>/classwork/", views.classroom_classwork, name="classroom_classwork"),
     path("<int:pk>/people/", views.classroom_people, name="classroom_people"),
     path("<int:classroom_id>/grades/", views.classroom_grades, name="classroom_grades"),
-    path("<int:pk>/analytics/", views.classroom_analytics, name="classroom_analytics"),
+    path("<int:classroom_id>/analytics/", views.classroom_analytics, name="classroom_analytics"),
 
     path("<int:pk>/grades/<int:student_id>/", views.student_grades, name="student_grades"),
     path("<int:pk>/grades/<int:student_id>/quiz/<int:quiz_id>/", views.student_quiz_attempts, name="student_quiz_attempts"),

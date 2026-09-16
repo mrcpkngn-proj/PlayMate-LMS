@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ quiz.classwork.title }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+<link rel="stylesheet" href="{% static 'css/classroom.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="quiz-container-results">
+
+    <div class="classroom-header">
+
+        <h1>
+
+            {{ quiz.classwork.title }}
+
+        </h1>
+
+    </div>
+
+    <div class="question-card">
+
+        <h3>Quiz Information</h3>
+
+        <table class="classroom-table">
+
+            <tr>
+                <td>Total Questions</td>
+                <td>{{ total_questions }}</td>
+            </tr>
+
+            <tr>
+                <td>Time Limit</td>
+                <td>{{ quiz.duration }} minutes</td>
+            </tr>
+
+            <tr>
+                <td>Display Mode</td>
+                <td>{{ quiz.get_display_mode_display }}</td>
+            </tr>
+
+            <tr>
+                <td>Shuffle Questions</td>
+                <td>
+                    {% if quiz.shuffle_questions %}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Shuffle Choices</td>
+                <td>
+                    {% if quiz.shuffle_choices %}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Question Timer</td>
+                <td>
+                    {% if quiz.use_question_timer %}
+                        Enabled
+                    {% else %}
+                        Disabled
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+
+                <td>Attempts</td>
+
+                <td>
+
+                    {{ attempts_left }}
+                    /
+                    {{ quiz.max_attempts }}
+                    Remaining
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="question-card">
+
+        <h3>Instructions</h3>
+
+        <ul>
+
+            <li>Read every question carefully.</li>
+
+            <li>The timer starts once you press Start Quiz.</li>
+
+            <li>You may not pause the quiz.</li>
+
+            <li>Multiple-answer questions award partial points.</li>
+
+            <li>Submit before the timer expires.</li>
+
+        </ul>
+
+    </div>
+
+    <div>
+
+        {% if is_teacher %}
+
+            <a
+                href="{% url 'quiz:take_quiz' quiz.id %}"
+                class="classroom-dashboard-btn">
+
+                Try Quiz
+
+            </a>
+            <a
+                href="{% url 'classroom:classroom_classwork' quiz.classwork.classroom.id %}"
+                class="classroom-dashboard-btn">
+                Back to Classwork
+            </a>
+
+        {% elif attempts_left > 0 %}
+            <a
+                href="{% url 'quiz:take_quiz' quiz.id %}"
+                class="classroom-dashboard-btn">
+
+                Start Quiz
+
+            </a>
+            <a
+                href="{% url 'classroom:classroom_classwork' quiz.classwork.classroom.id %}"
+                class="classroom-dashboard-btn">
+                Back to Classwork
+            </a>
+        {% else %}
+
+            <p style="
+                    color:#ff6b6b;
+                    margin-bottom:25px;
+                ">
+                ⚠ You have used all {{ quiz.max_attempts }} attempts for this quiz.
+            </p>
+            <a
+                href="{% url 'classroom:classroom_classwork' quiz.classwork.classroom.id %}"
+                class="classroom-dashboard-btn">
+                Back to Classwork
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
