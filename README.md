@@ -20,6 +20,28 @@ The project also contains several features that aims to help educators with incr
 * A.L.E.C.(AI-Enhanced Learning Environment Core) Sidebar
 * Gamified interface and menus
 
+## Screenshots
+
+### Login
+![PlayMate Login](screenshots/login.png)
+
+### Home Dashboard
+![PlayMate Home Dashboard](screenshots/home-dashboard.png)
+
+### Classroom Dashboard
+![PlayMate Classroom Dashboard](screenshots/classroom-dashboard.png)
+
+### Classwork
+![PlayMate Classwork](screenshots/classwork.png)
+
+### Quiz Builder
+![PlayMate Quiz Builder](screenshots/quiz_builder1.png)
+
+![PlayMate Quiz Builder - Additional View](screenshots/quiz_builder2.png)
+
+### Quiz Attempt
+![PlayMate Quiz Attempt](screenshots/quiz_attempt.png)
+
 ## Technologies Used
 
 * Python
@@ -38,10 +60,6 @@ The project is organized into separate files and folders for the system's logic,
 2. Open the project folder in VS Code or another Python-compatible IDE.
 3. Install the required dependencies.
 4. Run the main Python file.
-
-## Development
-
-This project is continuously being improved as I develop my programming and game development skills.
 
 ## Author
 

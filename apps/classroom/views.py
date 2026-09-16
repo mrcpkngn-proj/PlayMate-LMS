@@ -9,7 +9,6 @@ from apps.quiz.models import Attempt, Quiz
 from apps.assignment.models import Assignment, Submission
 from django.utils import timezone
 from django.urls import reverse
-from itertools import chain
 from apps.alec.services import AlecService
 from apps.notifications.utils import create_notification
 from apps.alec.memory import AlecMemory
